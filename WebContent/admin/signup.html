@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add it | 회원가입</title>
+</head>
+<style>
+    div {
+        font-family: "Noto Sans KR", sans-serif;
+    }
+    body {
+        background-color: #F1F1F1;
+    }
+    div.page_container {
+        background-color: white;
+        width: 1000px;
+        margin: auto;
+    }
+    div.page_top {
+        line-height: 80px;
+        height: 80px;
+        vertical-align: center;
+        padding-left: 30px;
+        background-color: #A3D2CA;
+        color: white;
+        clear: both;
+    }
+    div.page_middle {
+        display: flex;
+        justify-content: center;
+        padding:3em 2em 6em;
+    }
+    .page_middle_btn {
+        width: 900px;
+        display: flex;
+        justify-content: center;
+    }
+    .page_middle_btn .join_indi,.join_comp {
+        border-radius: 3px;
+        width: 250px;
+        display: inline-block;
+        background-color: #A3D2CA;
+    }
+    .page_middle_btn a {
+        color: white;
+        text-decoration:none;
+    }
+    .join_indi {
+        margin-right: 100px;
+    }
+    .box_line {
+        width:1000px;
+        height:0px;
+        margin-bottom: 2rem;
+        border: solid 1px #ebeff2;
+    }
+    p.m_title {
+        padding: 0 15px 0 15px;
+        font-size: x-large;
+    }
+    p.s_title {
+        padding: 0 15px 0 15px;
+        font-size: small;
+    }
+    p.box_login_temp a {
+        color: #51c2f7;
+        text-decoration: none;
+    }
+    a.join_indi {
+        background: #ffffff url("https://www.madahm.com/assets/new/images/renew/icn_join_client.png") no-repeat 90% center;
+    }
+    a.join_comp {
+        background: #ffffff url("https://www.madahm.com/assets/new/images/renew/icn_join_partner.png") no-repeat 90% center;
+    }
+    footer {
+        padding: 3em 2em 2em;
+    }
+
+</style>
+<body>
+<div class="page_container">
+    <div class="page_top">
+        <h1>ADD IT 회원가입</h1>
+    </div>
+    <div class="page_middle">
+        <div class="page_middle_btn">
+            <div class="join_indi">
+                <a  href="signup_client.html">
+                <p class="m_title">개인<br/>회원가입</p>
+                <p class="s_title">차량광고 부착을 원하는 파트너</p>
+            </a>
+            </div>
+            <div class="join_comp">
+            <a href="signup_company.html">
+                <p class="m_title">기업<br/>회원가입</p>
+                <p class="s_title">광고 외뢰를 원하는 사업자</p>
+            </a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="box_line"></div>
+        <p class="box_login_temp">이미 회원이신가요? &nbsp;<a href="login.html">로그인하기</a></p>
+        <p class="box_login_temp">아이디 / 비밀번호가 기억나지 않으신가요? &nbsp;<a href="#">아이디 찾기</a>&nbsp;&nbsp;&nbsp;
+            <a href="#">비밀번호 찾기</a></p>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add it | 로그인</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="../public/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Malgun Gothic';
+        }
+        .page_top {
+            width: 1000px;
+            height: 130px;
+            background-color: #A3D2CA;
+        }
+
+        .page_top h1 {
+            color: white;
+        }
+
+        .page_top_title {
+            padding: 30px 0;
+            text-align: center;
+        }
+        a {
+            color: #333;
+            text-decoration: none;
+            font-weight: normal;
+        }
+        input {
+            -webkit-writing-mode: horizontal-tb !important;
+            text-rendering: auto;
+            color: initial;
+            letter-spacing: normal;
+            word-spacing: normal;
+            text-transform: none;
+            text-indent: 0px;
+            text-shadow: none;
+            display: inline-block;
+            text-align: start;
+            -webkit-appearance: textfield;
+            background-color: white;
+            -webkit-rtl-ordering: logical;
+            cursor: text;
+            margin: 0em;
+            font: 400 13.3333px Arial;
+            padding: 1px 0px;
+            border-width: 2px;
+            border-style: inset;
+            border-color: initial;
+            border-image: initial;
+        }
+        .page_container {
+            margin: 50px auto;
+            height: 600px;
+            width: 1000px;
+            border: #e3e3ea solid 1px;
+        }
+        /*로그인 화면 위치 조정*/
+        .inner_login {
+            position: relative;
+        }
+        .login_form {
+            position: relative;
+            width: 320px;
+            margin: 0 auto;
+        }
+        legend {
+            text-align: center;
+            font-size: x-large;
+            font-weight: bold;
+        }
+        /* 라벨 글자 지우기  */
+        .screen_out {
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            position: absolute;
+            width: 0;
+            height: 0;
+            line-height: 0;
+        }
+        body, button, input, select, td, textarea, th {
+            font-size: 13px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        /*테두리 제거*/
+        fieldset, img {
+            border: 0;
+        }
+        fieldset > div#message {
+            font-size: 15px;
+            text-align: center;
+            height: 30px;
+            line-height: 20px;
+            color: #FF0000;
+        }
+        .login_form .box_login {
+            margin: 35px 0 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+        .login_form .input-box {
+            position: relative;
+            width: 100%;
+            margin: 0;
+            padding: 18px 19px 19px;
+            box-sizing: border-box;
+        }
+
+        /*로그인 박스 위아래 경계선*/
+        .login_form .input-box + .input-box {
+            border-top: 1px solid #ddd;
+        }
+
+        /*로그인 클래스의 input 디자인*/
+        .input-box input {
+            display: block;
+            width: 100%;
+            height: 100%;
+            font-size: 13px;
+            color: #000;
+            border: none;
+            outline: 0;
+            -webkit-appearance: none;
+            background-color: transparent;
+        }
+
+        button {
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+            border: none;
+            background: none;
+        }
+
+        /*로그인 버튼들*/
+        .btn_login, .btn_kakao_login {
+            text-decoration: none;
+            zoom: 1;
+            margin-top: 8px;
+            width: 100%;
+            height: 48px;
+            border-radius: 12px;
+            font-size: 17px;
+            color: black;
+        }
+
+        /*카카오 간편 로그인*/
+        .btn_kakao_login {
+            background-color: #FEE500;
+            border-color: #FEE500;
+        }
+
+        /*로그인 버튼*/
+        .btn_login {
+            background-color: #A3D2CA;
+            border-color: #A3D2CA;
+        }
+
+        .login_state {
+            overflow: hidden;
+            padding: 15px 0 0;
+        }
+
+        .inp_chk {
+            display: inline-block;
+            position: relative;
+            margin-bottom: -1px;
+        }
+
+        .login_state .inp_chk {
+            float: left;
+        }
+
+        .inp_chk .lg_radio {
+            position: absolute;
+            z-index: -1;
+            top: -3px;
+            left: 0;
+            width: 18px;
+            height: 18px;
+            border: 0;
+        }
+
+        .inp_chk .lg_lb {
+            display: inline-block;
+            margin-right: 19px;
+            color: #909090;
+            font-size: 13px;
+            line-height: 19px;
+            vertical-align: top;
+        }
+
+        .inp_chk .ico_check {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            margin: 1px 2px 0 0;
+            background-position: -60px 0;
+            color: #333;
+        }
+
+        .inp_chk .login_span {
+            font-weight: normal;
+            vertical-align: top;
+        }
+
+        .login_state .id_find {
+            float: right;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="page_container">
+    <div class="page_top">
+        <div class="page_top_title">
+            <h1>회원 로그인</h1>
+        </div>
+    </div>
+    <div class="inner_login">
+        <div class="login_form">
+            <form method="post" id="authForm" action="">
+                <fieldset>
+                    <div class="box_login">
+                        <div class="input-box">
+                            <label for="loginId" class="screen_out">아이디</label>
+                            <input type="text" id="loginId" name="loginId" placeholder="ID"
+                                   onkeyup="checkCapsLock(event)">
+                        </div>
+                        <div class="input-box">
+                            <label for="loginPw" class="screen_out"> 비밀번호</label>
+                            <input type="password" id="loginPw" name="password" placeholder="Password"
+                                   onkeyup="checkCapsLock(event)">
+                        </div>
+                    </div>
+                    <div id="message"></div>
+                    <button type="button" class="btn_kakao_login"
+                            onclick="location.href='https://kauth.kakao.com/oauth/authorize?' +
+                             'response_type=code&client_id=a1be24597949e454b86b2921694fc65b&' +
+                              'redirect_uri=http://localhost:8888/Add_it/login&response_type=code'">
+                        카카오 간편 로그인 (개인회원)</button>
+                    <button type="button" class="btn_login" onclick="Login()">로그인</button>
+                    <div class="login_state">
+                        <div class="inp_chk">
+                            <input type="checkbox" class="lg_radio" id="keepLogin" name="keepLogin">
+                            <label for="keepLogin" class="lg_lb">
+                                <span class="img_top ico_check"></span>
+                                <span class="login_span">로그인 상태 유지</span>
+                            </label>
+                        </div>
+                        <span class="id_find">
+                            <a href="#" class="link_find">아이디</a>
+                                        /
+                            <a href="#" class="link_find">비밀번호 찾기</a>
+                        </span>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $("#authForm").keypress(function (e) {
+        if (e.keyCode === 13) {
+            Login();
+        }
+    });
+
+    function checkCapsLock(event) {
+        if (event.getModifierState("CapsLock")) {
+            $('#message').text("Caps Lock이 켜져 있습니다.");
+        } else {
+            $('#message').text("");
+        }
+    }
+
+    function Login() {
+        var id = $('form#authForm > fieldset > .box_login > .input-box > #loginId').val();
+        var pwd = $('form#authForm > fieldset > .box_login > .input-box > #loginPw').val();
+        if (id === "") {
+            alert("아이디를 입력하세요.");
+        } else if (pwd === "") {
+            alert("패스워드를 입력하세요.");
+        } else {
+            var backurl = '/Add_it/login';
+            $.ajax({
+                url: backurl,
+                method: 'post',
+                accept: 'application/json',
+                data: JSON.stringify({
+                    'id': id,
+                    'pwd': pwd
+                }),
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                /*{
+                    id: $('form#authForm > fieldset > .box_login > .input-box > #loginId').val(),
+                    pwd: $('form#authForm > fieldset > .box_login > .input-box > #loginPw').val(),
+                },*/
+                success: function (responseObj) {
+                    if (responseObj.status == 1) {
+                        location.href = '../main.html';
+                    } else {
+                        alert("로그인 실패, " + responseObj.msg);
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status);
+                },
+            });
+        }
+    }
+</script>
+</html>

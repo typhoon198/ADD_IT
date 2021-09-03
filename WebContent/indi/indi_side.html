@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>개인 마이페이지</title>
+
+<!-- <link rel="stylesheet" href="./css/basic.css"> -->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<meta charset="UTF-8">
+<script>
+    $(function () {
+	// DOM 트리에서 a객체 찾기
+	var $menuObj = $('#indi_ul > li > a');
+	
+	// DOM 트리에서 section 객체 찾기
+    var $section = $('#page-top > section > div > section'); // 상위
+	
+	$menuObj.click(function () {
+		$(document).off();
+		var href = $(this).attr('href');
+		switch (href) {
+		//case './indi/indi_m1.html':  // (O : indi/indi_m2.html O: ../indi/indi_m2.html | 상위 O:./indi/indi_m1.html)
+		//case './indi/indi_m2.html':
+		//case './indi/indi_m3.html':
+		case '/Add_it/indi/indi_m1.html':  // (O : indi/indi_m2.html O: ../indi/indi_m2.html | 상위 O:./indi/indi_m1.html)
+		case '/Add_it/indi/indi_m2.html':
+		case '/Add_it/indi/indi_m3.html':
+            $section.load(href, function (responseTxt, statusTxt, xhr) {
+                if (statusTxt == 'error') alert('Error: ' + xhr.status + ': ' + xhr.statusText);
+              });
+              break;
+		}	
+    return false;
+	});
+});
+
+</script>
+
+
+<style>
+
+* { 
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+	list-style-type: none;
+    box-sizing: border-box;
+}
+
+.indi_container{
+	display: flex;
+	margin-left: 110px;
+}
+
+.indi_side_section{
+	width:950px;
+	min-height: 1200px;
+	
+}
+
+nav.indi_item {
+	width:200px;
+	min-height: 1200px;
+	text-align:center; /* 가운데 정렬 li : display: inline-block; -> ul : text-align:center; */
+	background-color: teal;
+}
+
+/* ul */
+div.indi_container>nav>ul {
+	width:200px;
+	height:300px;
+	margin-top: 70px;
+	text-align:center; /* 가운데 정렬 li : display: inline-block; -> ul : text-align:center; */
+
+}
+
+div.indi_container li {
+	width: 200px;
+	margin-bottom:20px;
+	padding: 20px 20px; /*  */
+	display: inline-block; /* 가운데 정렬 li : display: inline-block; -> ul : text-align:center; */
+}
+
+.indi_container li a , #myIndi {
+	color: white;
+	display: block;
+    font-size: x-large;
+}
+
+/* 마이페이지 */
+body > div > nav > div {
+	margin-top: 30px;
+	background-color: orange;
+	padding: 30px;
+}
+
+
+</style>
+
+</head>
+<body> 
+<div class="indi_container">
+	<nav class="indi_item">
+		<div id="myIndi">마이페이지</div>		  
+		<ul id="indi_ul"> 
+			<!-- <li><a href="./indi/indi_m1.html">개인정보수정</a></li>
+			<li><a href="./indi/indi_m2.html">광고신청내역</a></li>
+			<li><a href="./indi/indi_m3.html">광고내역/인증</a></li> -->
+			<li><a href="/Add_it/indi/indi_m1.html">개인정보수정</a></li>
+			<li><a href="/Add_it/indi/indi_m2.html">광고신청내역</a></li>
+			<li><a href="/Add_it/indi/indi_m3.html">광고내역/인증</a></li>
+		</ul>
+	</nav>
+	
+	<section class="indi_side_section">
+
+	</section>
+</div>
+
+</body>
+</html>

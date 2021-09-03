@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>기업 마이페이지1</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    </head>
+    <style>
+    	body>section {
+    	 height: 1250px;
+     	 width: 1150px;
+       	 clear: both;
+      	 margin: auto;
+      	 padding: 150px 20px 0px;
+    	}
+        #mypage {
+            width: 200px;
+            height: 1200px;
+            display: block;
+            justify-content: center;
+            float: left;
+            font-size: x-large;
+            text-align:center;
+            background-color: teal;
+        }
+        #myCom {
+	        margin-top: 60px;
+	        margin-bottom: 80px;
+	        color: white;
+        }
+        #com_ul>li {
+        	display: flex;
+        	margin-top: 50px;
+        	margin-bottom: 50px;
+        }
+        #com_ul>li>a {
+        	color: white;
+        }
+        #form_box {
+            margin: 100px 0px;
+            margin-right: 150px;
+            margin-bottom: 65px;
+            font-size: 15px;
+            float: right;
+        }
+        #address {
+            margin: -50px -35px;
+            float: right;
+        }
+        input {
+            width: 130px;
+            height: 25px;
+            font-size: 15px;
+            text-align: center;
+        }
+        input:focus {
+            background-color: powderblue;
+        }
+        #modify {
+            margin-left: 230px;
+            margin-right: 120px;
+            float: right;
+            width: 90px;
+            height: 30px;
+        }
+        #upload {
+            width: 350px;
+            height: 500px;
+            margin-left: 100px;
+            float: left;
+        }
+        #image-show {
+            display: flex;
+            justify-content: center;
+            width: 350px;
+            height: 380px;
+            margin-top: 75px;
+            margin-bottom: -130px;
+        }
+        #chooseFile {
+            visibility: hidden;
+        }
+        #chooseImage {
+            display: flex;
+            justify-content: center;
+            font-size: 15px;
+        }
+        #fileInput {
+            margin-left: 45px;
+            font-size: 15px;
+        }
+        #reUpload {
+            margin-left: 124px;
+            width: 90px;
+            height: 30px;
+        }
+    </style>
+    <body>
+        <section>
+            <div id="mypage">
+                <div id="myCom">마이페이지</div>	
+				<ul id="com_ul"> 
+				<li><a href="./com/mypage_first.html">기업정보수정</a></li>
+				<li><a href="./com/mypage_second_1.html">광고등록내역</a></li>
+				<li><a href="./com/mypage_third_1.html">광고내역/지급</a></li>
+				</ul>
+            </div>
+            <form>
+                <div id="upload" method="post" enctype="multipart/form-data">
+                    <div id="image-show">
+                        </div>
+                    <div id="chooseImage">
+                        <label for="chooseFile">
+                            👉 CLICK HERE! 👈
+                        </label>
+                    </div>
+                    <div class="fileContainer">
+                        <div id="fileInput">
+                            <p>FILE NAME: &nbsp;&nbsp;&nbsp;<ui id="fileName"></ui></p>
+                        </div>
+                        <button id="reUpload" type="button">이미지 수정</botton>
+                    </div>
+                    <div style="line-height: 10px;"><br/></div>
+                    <input type="file" id="chooseFile" name="chooseFile" accept="image/*" onchange="loadFile(this)">
+                </div>
+                <div id="form_box">
+                    <label><span>아이디</span><input id="com_id" type="text" name="id" readonly/></label>
+                    <label style="margin-left: 26px;"><span>사업자 등록번호</span><input id="com_rn" type="text" name="company_register_number"/></label>
+                    <br/><br/>
+                    <label><span>업체명</span><input id="com_name" type="text" name="company_name"/></label>
+                    <label style="margin-left: 98px;"><span>업종</span><input id="com_type" type="text" name="company_type"/></label>
+                    <br/><br/>
+                    <label style="margin: 0px -14px;"><span>비밀번호</span><input id="com_pw" type="password" name="pw"/></label>
+                    <label style="margin-left: 98px;"><span>이메일</span><input id="com_email" type="text" name="company_email"/></label>    
+                    <br/><br/>
+                    <label style="margin: 0px -45px;"><span>비밀번호 확인</span><input id="com_pw2" type="password" name="pw_check"/></label>
+                    <br/><br/>
+                    <label style="margin: 0px -14px;"><span>전화번호</span><input id="com_phone" type="text" name="Phone_number"/></label>
+                    <div id="address">
+                    <label style="margin-left: 150px;"><span>주소</span><input id="memberPost" type="text" maxlength="5" readonly/></label>
+                    <button id="searchZip" type="button">우편번호검색</button>
+                    <br/><div style="line-height: 10px;"><br/></div>
+                    <input id="memberAddr" style="margin-left: 189px; width: 220px;" type="text" class="basicaddr" readonly/><br/><div style="line-height: 10px;"><br/></div>
+                    <input id="memberAddrDetail" style="margin-left: 189px; width: 220px;" type="text" name="addr" required placeholder="상세주소"/>
+                    </div>
+                </div>
+                <button id="modify" type="button">수정하기</button>
+            </form>
+        </section>
+    </body>
+    <script>
+	   var fnbt = {
+				1: '병의원',
+				2: '맛집/카페',
+				3: '생활서비스',
+				4: '인테리어/설비',
+				5: '학원/교육',
+				6: '부동산중개업소',
+				7: '유통',
+				8: '법무/세무/회계',
+				9: '헤어/뷰티/미용',
+				10: '스포츠/헬스/레저',
+				11: '화랑/출판/공방',
+				12: '공공/단체/정책',
+				13: '영화/연출/미술',
+				14: '시장/거리',
+				15: '호텔/숙박/캠핑',
+				16: '기타',
+			};
+	    $(function () {
+	    	// DOM 트리에서 a객체 찾기
+	    	var $menuObj = $('#com_ul > li > a');
+	    	
+	    	// DOM 트리에서 section 객체 찾기
+	        var $section = $('#page-top > section'); // 상위
+	    	
+	    	$menuObj.click(function () {
+	    		$(document).off();
+	    		var href = $(this).attr('href');
+	    		switch (href) {
+	    		case './mypage_first.html': 
+	    		case './com/mypage_second_1.html':
+	    		case './com/mypage_third_1.html':
+	                $section.load(href, function (responseTxt, statusTxt, xhr) {
+	                    if (statusTxt == 'error') alert('Error: ' + xhr.status + ': ' + xhr.statusText);
+	                  });
+	                  break;
+	    		}	
+	        return false;
+	    	});
+	    });
+	    $(function () {
+	    	// 개인 정보 출력
+			var backurl = '/Add_it/com';
+			$.ajax({
+				url: backurl,
+				method: 'get',
+				data: {type : 1},  // 1:조회, 2:수정
+				success: function (responseObj) {
+					if (responseObj.length == 0) {
+				    	alert("개인 정보가 없습니다.");
+					} else {
+						$("#com_id").val(responseObj.com_id)
+						$("#com_rn").val(responseObj.com_rn)
+						$("#com_name").val(responseObj.com_name)
+						$("#com_type").val(fnbt[responseObj.com_bt])
+						$("#com_pw").val("＊＊＊＊＊＊＊＊")
+						$("#com_pw2").val("＊＊＊＊＊＊＊＊")
+						$("#com_email").val(responseObj.com_email)
+						$("#com_phone").val(responseObj.com_phone)
+						$("#memberPost").val(responseObj.com_zipcode)
+						$("#memberAddr").val(responseObj.com_addr.match(/.*[동,읍,리,면](?<!\s)/))
+						$("#memberAddrDetail").val(responseObj.com_addr.match(/(?<=[동]\s).*/))
+					}
+				}
+			});
+			// 개인 정보 수정용
+			$("#modify").click(function(){
+				var backurl = '/Add_it/com';
+				 $.ajax({
+				    	url: backurl,
+				        method: 'post',
+						data : inform_val(),  // 1:조회, 2:수정
+				        success: function (responseData) {
+				        	switch (responseData.status){
+			            	case 1:
+			                	alert('변경이 완료되었습니다.');
+			                	break;
+			              	case 2:
+			                	alert('변경 내용이 없습니다.');
+				          		break;
+				        	}
+				    	}
+				});
+			});
+			var inform_val = function() {
+		    	var map = {
+					type:2,
+					com_id:$("#com_id").val(),
+					com_email:$("#com_email").val(),
+					com_phone:$("#com_phone").val(),
+					com_zipcode:$("#memberPost").val(),
+					com_address:$("#memberAddr").val()
+				}
+				return map;
+		    }
+			});
+        $('span').append('&nbsp;:&nbsp;');
+        $('#reUpload').click(showImage); //Submit 버튼 클릭시 이미지 보여주기
+        $('#chooseImage').click(deleteImage); //click here 버튼 누르면 기존 이미지 삭제 
+        $('#searchZip').click(findAddr);
+        
+        function showImage() {
+            // var newImage = $('#image-show').children().last();
+            var newImage = $('#image-show').children();   
+            newImage.css('visibility', 'visible');
+            $('#fileName').text(null); //기존 파일 이름 지우기
+        }
+
+        function loadFile(input) {
+            var file = input.files[0];
+            var name = $('#fileName');
+            name.text(file.name);
+
+            var newImage = $('<img />');
+            newImage.attr('class', 'img');
+            newImage.attr('src', URL.createObjectURL(file)); 
+            newImage.attr('width', '60%');
+            newImage.attr('height', '60%');
+            newImage.css('visibility', 'hidden'); //버튼을 누르기 전까지는 이미지 숨기기
+            newImage.css('objectFit', 'contain');  
+
+            var container = $('#image-show');
+            container.append(newImage);
+        };
+
+        function deleteImage() {
+         var nowImage = $('#image-show');
+         nowImage.empty(); //이미지 요소 지우기     
+        };
+
+        function findAddr(){
+	        new daum.Postcode({
+                oncomplete: function(data) {
+        	
+        	    console.log(data);
+        	
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+                // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var roadAddr = data.roadAddress; // 도로명 주소 변수
+                var jibunAddr = data.jibunAddress; // 지번 주소 변수
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                $('#memberPost').val(data.zonecode); 
+                if(roadAddr !== ''){
+                    $('#memberAddr').val(roadAddr);
+                } 
+                else if(jibunAddr !== ''){
+                    $('#memberAddr').val(jibunAddr);
+                }
+            }
+            }).open();
+        }       
+    </script>
+</html>

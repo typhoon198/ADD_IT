@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add it</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <link href="public/css/bootstrap.min.css" rel="stylesheet">
+  <link href="public/css/NavStyle.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="public/js/bootstrap.min.js"></script>
+  <script src="public/js/mypage.js"></script>
+
+  <style>
+    * {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    body {
+      height: 1500px;
+    }
+    #mainNav, div.container-1800, div.logo,
+    a.advButton, a.admin-ok, a.admin-no {
+      text-align: left;
+      height: 90px;
+      color: white;
+      font-weight: 500;
+      word-spacing: 0;
+    }
+    /*상단 네비게이션 바*/
+    #mainNav {
+      background-color: #A3D2CA;
+      width: 2200px;
+      border-bottom: #A3D2CA;
+      position: relative;
+      display: block;
+      z-index: 100;
+      cursor: default;
+      box-sizing: border-box;
+      margin: 0 auto;
+    }
+    /* 네비게이션 바 컨테이너 */
+    #mainNav > div.container-1800 {
+      width: 1800px;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+    }
+    div.logo {
+      width: 203px;
+      min-height: auto;
+      min-width: auto;
+      display: inline;
+      transform: none;
+      margin-left: 270px;
+    }
+    /*로고 이미지 컨테이너*/
+    div.logo > a.img {
+      line-height: 80px;
+      height: 100%;
+      width: 130px;
+      margin: 0 67px 0 0;
+      padding: 16px 0 16px 0;
+      display: block;
+      cursor: pointer;
+      background-size: contain;
+    }
+    /*로고 이미지*/
+    div.logo > a.img > img {
+      vertical-align: top;
+      height: 56px;
+      width: 52px;
+      display: inline;
+      cursor: pointer;
+    }
+    ol, ul {
+      list-style: none;
+    }
+    ul.adv-nav {
+      display: flex;
+      position: relative;
+    }
+    ul.admin-nav {
+      display: flex;
+      position: absolute;
+      right: 350px;
+    }
+    /*광고 등록, 검색 버튼*/
+    ul.adv-nav > li > a.advButton {
+      float: left;
+      font-size: 25px;
+      font-weight: 500;
+      line-height: 20px;
+      text-decoration: none solid rgb(52, 60, 72);
+      width: 147px;
+      padding: 32px 16px 32px 16px;
+      display: block;
+      cursor: pointer;
+      transform: none;
+      box-sizing: border-box;
+    }
+    /*로그인, 로그아웃 버튼*/
+    ul.admin-nav > li > a.admin-ok, a.admin-no {
+      float: right;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 16px;
+      text-decoration: none solid rgb(110, 117, 127);
+      width: 120px;
+      padding: 34px 0 34px 20px;
+      display: block;
+      cursor: pointer;
+    }
+
+    section.base {
+      height: 1250px;
+      height: 95%;
+      width: 1450px;
+      clear: both;
+      margin: auto;
+      border-left: 1px /* solid */;
+      border-right: 1px /* solid */;
+      border-bottom: 1px /* solid */;
+      padding: 150px 20px 0px;
+    }
+
+    footer {
+      text-align: center;
+      margin: auto;
+      width: 80%;
+    }
+
+  </style>
+</head>
+
+<body id="page-top">
+<nav class="navbar" id="mainNav">
+  <div class="container-1800">
+    <div class="logo">
+      <a class="img" onclick="location.href='./'">
+        <img src="public/images/addit_logo.png" alt="">
+      </a>
+    </div>
+    <ul class="adv-nav">
+      <li><a class="advButton" href="addadv/addadv.html">광고 등록</a></li>
+      <li><a class="advButton" href="search/advsearch.html">광고 검색</a></li>
+    </ul>
+    <ul class="admin-nav">
+      <li><a class="admin-no" href="admin/login.html">로그인</a></li>
+      <li><a class="admin-no" href="admin/signup.html">회원가입</a></li>
+      <li><a class="admin-ok" href="javascript:Logout()">로그아웃</a></li>
+      <li><a class="admin-ok" href="#" id="my-page">마이페이지</a></li>
+      <!-- <li><a class="admin-no my" href="./indi/indi_side.html">test 개인페이지</a></li> -->
+    </ul>
+  </div>
+</nav>
+<section class="base">
+
+</section>
+<footer>
+  <!-- 사업자등록번호 : 201-81-21515 (주)스타벅스커피 코리아 대표이사 : 송 데이비드 호섭
+  TEL : 1522-3232 개인정보 책임자 : 하익성 ⓒ 2021 Starbucks Coffee Company. All
+  Rights Reserved. -->
+</footer>
+</body>
+<script>
+  function logined() {
+    $('li > a.admin-no').hide();
+    $('li > a.admin-ok').show();
+  }
+
+  function logouted() {
+    $('li > a.admin-no').show();
+    $('li > a.admin-ok').hide();
+  }
+
+  function Logout() {
+    var backurl = '/Add_it/logout';
+    $.ajax({
+      url: backurl,
+      method: 'get',
+      success: function () {
+        alert("로그아웃 되었습니다.");
+        document.location.reload();
+      },
+      error: function (xhr) {
+        alert("로그아웃 에러");
+      },
+    });
+  }
+
+  function checkLogined() {
+    var backurl = "/Add_it/checklogined";
+    $.ajax({
+      url: backurl,
+      success: function (responseObj) {
+        if (responseObj.status == 1) {
+          //로그인된 경우
+          logined();
+        } else {
+          //로그아웃된 경우
+          logouted();
+        }
+      },
+    });
+  }
+
+  function checkIntervalLogined() {
+    window.setInterval(checkLogined, 600000);
+  }
+
+  logouted();
+  checkLogined();
+/*  checkUserType();
+  checkIntervalLogined();*/
+
+
+  // 카카오 간편 로그인 실패시
+  $.urlParam = function (name) {
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)')
+            .exec(window.location.href);
+    if (results == null) {
+      return 0;
+    }
+    return results[1] || 0;
+  }
+  $(function () {
+    if ($.urlParam('login') === "fail") {
+      alert("카카오 간편로그인 실패.");
+    }
+  }); 
+</script>
+</html>

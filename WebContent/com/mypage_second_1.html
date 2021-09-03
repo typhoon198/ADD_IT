@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+    <title>기업 마이페이지2-1</title>
+</head>
+<style>
+    body > section {
+        height: 1250px;
+        width: 1150px;
+        clear: both;
+        margin: auto;
+        padding: 150px 20px 0px;
+    }
+
+    #content1 {
+        margin-left: 250px;
+        width: 1100px;
+        height: 400px;
+    }
+    
+    #content2 {
+        margin-left: 250px;
+        width: 1100px;
+        height: 600px;
+    }
+
+    body > section > table, td {
+        margin: 250px 310px;
+        border-style: solid;
+        border-collapse: collapse;
+        text-align: center;
+        width: 800px;
+        height: 70px;
+    }
+
+    #main {
+        background-color: lightgray;
+    }
+
+    #mypage {
+        width: 200px;
+        height: 1200px;
+        display: block;
+        justify-content: center;
+        float: left;
+        font-size: x-large;
+        text-align: center;
+        background-color: teal;
+    }
+
+    #myCom {
+        margin-top: 60px;
+        margin-bottom: 80px;
+        color: white;
+    }
+
+    #com_ul > li {
+        display: flex;
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    #com_ul > li > a {
+        color: white;
+    }
+
+    #sub1 > td {
+        height: 40px;
+    }
+
+    #sub2 > td {
+        height: 40px;
+    }
+
+    button {
+        width: 60%;
+        height: 30px;
+    }
+    .accept {
+    	margin-left: 6px;
+    	margin-bottom: 5px;
+    }
+</style>
+<body>
+<section>
+    <div id="mypage">
+        <div id="myCom">마이페이지</div>
+        <ul id="com_ul">
+            <li><a href="./com/mypage_first.html">기업정보수정</a></li>
+            <li><a href="./com/mypage_second_1.html">광고등록내역</a></li>
+            <li><a href="./com/mypage_third_1.html">광고내역/지급</a></li>
+        </ul>
+    </div>
+    <div id="content1">
+        <table class="adv">
+            <tr class="main">
+                <td>등록일자</td>
+                <td>광고번호</td>
+                <td>모집마감일</td>
+                <td>시작일</td>
+                <td>종료일</td>
+                <td>1인 월 광고비</td>
+                <td>모집인원</td>
+                <td>지원현황</td>
+            </tr>
+            <tr class="sub1" style="display:none">
+                <td class="adv_date"></td>
+                <td class="adv_no"></td>
+                <td class="adv_rp"></td>
+                <td class="adv_startmonth"></td>
+                <td class="adv_endmonth"></td>
+                <td class="adv_fee"></td>
+                <td class="adv_total"></td>
+                <td class="adv_confirm">
+                    <button class="adv_confirm">확인</button>
+                </td>
+            </tr>
+            <!--             <tr id="sub2">
+                           <td></td>
+                           <td></td>
+                           <td></td>
+                           <td></td>
+                           <td></td>
+                           <td></td>
+                           <td></td>
+                           <td></td>
+                           <td><button>확인</button></td>
+                       </tr>
+            -->
+        </table>
+    </div>
+    <div id="content2">
+        <table class="detail">
+            <tr id="main">
+                <td>순번</td>
+                <td>아이디</td>
+                <td>주소</td>
+                <td>나이</td>
+                <td>차종</td>
+                <td>결정하기</td>
+            </tr>
+            <tr class="sub2" style="display:none">
+                <td class="no"></td>
+                <td class="in_id"></td>
+                <td class="addr"></td>
+                <td class="age"></td>
+                <td class="in_cartype"></td>
+                <td class="a">
+                <button class="accept">수락</button>&nbsp;&nbsp;<button class="refusal">거절</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</section>
+</body>
+<script>
+	var fnct = {
+	        1: '경차',
+	        2: '승용차',
+	        3: 'SUV',
+	        4: '대형차',
+	     };
+	function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+     };
+    $(function () {
+        // DOM 트리에서 a객체 찾기
+        var $menuObj = $('#com_ul > li > a');
+
+        // DOM 트리에서 section 객체 찾기
+        var $section = $('#page-top > section'); // 상위
+
+        $menuObj.click(function () {
+            $(document).off();
+            var href = $(this).attr('href');
+            switch (href) {
+                case './com/mypage_first.html':
+                case './mypage_second_1.html':
+                case './com/mypage_third_1.html':
+                    $section.load(href, function (responseTxt, statusTxt, xhr) {
+                        if (statusTxt == 'error') alert('Error: ' + xhr.status + ': ' + xhr.statusText);
+                    });
+                    break;
+            }
+            return false;
+        });
+        var $trObj1 = $('table.adv tr.sub1');
+        var url = '/Add_it/comadvrl';
+        console.log(url);
+        $.ajax({
+            url: url,
+            method: 'get',
+            success: function (responseData) {
+                console.log(responseData);
+                $(responseData).each(function (i, e) {
+                    var $copyObj;
+                    //모집일 시작일 7일전                         mils   초   분   시간      일
+                    /* var temp = new Date(responseData.adv_startmonth)-604800000; */
+                    var temp = new Date(e.adv_startmonth)-(1000 * 60 * 60 * 24 * 7);
+                    var adv_rp = new Date(temp).toISOString().substring(0, 10);
+                    console.log(e.adv_startmonth);
+                    $copyObj = $trObj1.clone();
+                    $copyObj.find('td.adv_date').html(e.adv_date);
+                    $copyObj.find('td.adv_no').html(e.adv_no);
+                    $copyObj.find('td.adv_rp').html(adv_rp);
+                    $copyObj.find('td.adv_startmonth').html(e.adv_startmonth);
+                    $copyObj.find('td.adv_endmonth').html(e.adv_endmonth);
+                    $copyObj.find('td.adv_fee').html(numberWithCommas(e.adv_fee) + "원");
+                    $copyObj.find('td.adv_total').html(e.adv_total);
+                    $copyObj.find('td.adv_confirm > button.adv_confirm').val(e.adv_no);
+                    $copyObj.show();
+                    $trObj1.parent().append($copyObj);
+
+                });
+            },
+        });
+        var $trObj2 = $('table.detail tr.sub2');
+        $('table.adv').on('click', 'tr.sub1 td.adv_confirm button', function () {
+        	$('tr.sub2').not(':first').remove();
+            var checkBtn = $(this);
+            var tr = checkBtn.parent().parent();
+            var td = tr.children();
+            var adv_no = td.eq(1).text();
+            var url = '/Add_it/advrgls';
+
+            console.log("adv_no : " + adv_no);
+            $.ajax({
+                url: url,
+                data: {adv_no: adv_no},
+                method: 'get',
+                success: function (responseData) {
+                    console.log(responseData);
+                    $(responseData).each(function (i, e) {
+                        if (e.app_state == 0) { //대기인 인원만 출력
+                            var $copyObj;
+                            var today = new Date();
+                            var birthday = new Date(e.i.in_birthday);
+                            var age = today.getFullYear() - birthday.getFullYear() + 1;
+                            
+                            $copyObj = $trObj2.clone();
+                            $copyObj.find('td.no').html(i + 1);
+                            $copyObj.find('td.in_id').html(e.app_in_id);
+                            $copyObj.find('td.addr').html(e.i.in_address);
+                            $copyObj.find('td.age').html(age);
+                            $copyObj.find('td.in_cartype').html(fnct[e.i.in_cartype]);
+                            console.log(e.app_no);
+                            $copyObj.find('td.a button').val(e.app_no);
+                            $copyObj.show();
+                            $trObj2.parent().append($copyObj);
+                        }
+
+                    });
+                },
+            });
+
+        });
+
+
+        //수락버튼 거절버튼
+         $('table.detail').on('click', 'tr.sub2 td.a button.accept', function(){
+            //바꾸고 싶은 상태 1 수락, -1 거절
+            var app_state = 1;
+            var app_no = $(this).val();
+            var url = "/Add_it/confirmadvrl"
+            $.ajax({
+               url : url,
+               data : { app_no: app_no, app_state: app_state },
+               method : 'get',
+               success : function(responseObj) {
+            	   console.log("수락");
+                  $(this).parent().find('button').hide();
+               },
+            });
+            });
+         $('table.detail').on('click', 'tr.sub2 td.a button.refusal', function(){
+             //바꾸고 싶은 상태 1 수락, -1 거절
+             var app_state = -1;
+             var app_no = $(this).val();
+             var url = "/Add_it/confirmadvrl"
+             $.ajax({
+                url : url,
+                data : { app_no: app_no, app_state: app_state },
+                method : 'get',
+                success : function(responseObj) {
+                	console.log("거절");
+                   $(this).parent().find('button').hide();
+                },
+             });
+             });
+    });
+</script>
+</html>

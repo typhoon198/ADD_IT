@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>개인 마이페이지 - 메뉴3</title>
+
+
+<!-- CSS -->
+<!-- <link rel="stylesheet" href="./css/basic.css" /> -->
+
+<!-- jQuery -->
+<script
+   src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$(function() {
+		$("#title2").css("color", "red");
+
+		// 모달 창 띄우기
+		$(".btnCert").click(function() {
+			$(".modal").fadeIn();
+		});
+		// 모달 창 감추기
+		$("button.ok_close").click(function() {
+			$(".modal").fadeOut();
+		});
+		
+		
+		// CertServlet에서 데이터 받기
+		var $trHistoryObj = $('tr.tr_history');
+		$.ajax({
+			url : '/Add_it/apply',
+			data : {type : 2},
+			success : function(responseObj) {
+				if (responseObj.status == 0) {
+					alert("메뉴3 첫 화면:"+responseObj.status);
+				}
+				console.log("responseObj.length "+responseObj.length);
+				var len = responseObj.length;
+	            $(responseObj).each(function (i, e) {
+					//alert("재호출");
+
+	                var $copyObj = $trHistoryObj.clone();
+	                $copyObj.find('td.appNo').html(e.app_no);
+	                $copyObj.find('td .pay_detail').attr('value', e.app_no);
+	                $copyObj.find('td .cert_detail').attr('value', e.app_no);
+	                $copyObj.find('td.advNo').html(e.adv.adv_no);
+	                $copyObj.find('td.advTerm').html(getTerm(e.adv.adv_startmonth, e.adv.adv_endmonth));
+	                $copyObj.find('td.price').html(numberWithCommas(e.adv.adv_fee));
+	                $copyObj.find('td.state').html(getState(e.adv.adv_endmonth));
+					$copyObj.show();
+	                $trHistoryObj.parent().append($copyObj);
+				});
+			},
+			error : function(xhr) { // 실패 시 호출될 콜백펑션
+				alert(xhr.status);
+			}
+  		});
+
+		
+		
+		// 월별 입금 관련 내역
+		$(document).on('click', 'td.detail > button.pay_detail', function() {
+			$('tr.tr_pay').not(':first').remove();
+			
+			$('tr.tr_pay:first').hide();
+   			$('tr:nth-child(2) > td.payDate').removeAttr("colspan").html('');
+	        $('tr.tr_pay > td.amount').show();
+	        
+			$(this).off('click');
+			var app_no = $(this).attr('value');
+			$.ajax({
+				url : '/Add_it/applyline',
+				data : {type : 1, app_no : app_no}, // 1:지불 , 2:인증 // app_no : app_no 로 변경할 것.
+				success : function(responseObj) {
+					if (responseObj.status == 0) {
+						alert(responseObj.status);
+					}
+					
+					var len = responseObj.length;
+					var $trObj = $('tr.tr_pay');
+		            $(responseObj).each(function (i, e) {
+		                var $copyObj = $trObj.clone();
+						if(e.pay_fee==0) {
+	               			$trObj.show();
+	               			$('tr:nth-child(2) > td.payDate').attr("colspan", 2).html('<h3>입금 내역이 없습니다.</h3>');
+	               			$('tr.tr_pay > td.amount').hide();
+							return false;
+
+						}
+						$copyObj.find('td.payDate').html(e.pay_date);
+						$copyObj.find('td.amount').html(numberWithCommas(e.pay_fee));
+
+						$copyObj.show();
+               			$trObj.parent().append($copyObj);
+					});
+				},
+				error : function(xhr) { // 실패 시 호출될 콜백펑션
+					alert(xhr.status);
+				}
+
+			});
+		});
+		
+		// 월별 인증 관련 내역
+		$(document).on('click', 'td.detail > button.cert_detail', function() {
+			$('tr.tr_cert').not(':first').remove();
+			$(this).off('click');
+			var app_no = $(this).attr('value');
+			$.ajax({
+				url : '/Add_it/applyline',
+				data : {type : 2, app_no : app_no}, // 1:지불 , 2:인증 // app_no : app_no 로 변경할 것.
+				success : function(responseObj) {
+					if (responseObj.status == 0) {
+						alert(responseObj.status);
+					}
+					var len = responseObj.length;
+					var $trObj = $('tr.tr_cert');
+		            $(responseObj).each(function (i, e) {
+		             	var uploadState;
+		             	var veriState
+		             	switch(e.veri_state){
+		             	  case 2 : uploadState = "-"; veriState = "예정"; break;
+		             	  case 1 : uploadState = "완료"; veriState = "승인"; break;
+		             	  case 0 : uploadState = "미완료";  veriState = "승인대기"; break;
+		             	  case -1 : uploadState = "미완료"; veriState = "거절(미충족)"; break;
+		             	  default: uploadState = "형식 불일치";
+		             	}
+		             	
+		                $copyObj = $trObj.clone();
+						$copyObj.find('td.adTerm').html(getMonth(e.veri_month));
+						$copyObj.find('td.gpsMeter').html(e.veri_meter);
+						$copyObj.find('td.state').html(veriState);
+						
+						if(compareDate(e.veri_month)){
+							$copyObj.find('td .btncert').html(uploadState);
+						}else{
+							$copyObj.find('td.cert').html(uploadState);
+						}
+						$copyObj.show();
+               			$trObj.parent().append($copyObj);
+
+					});
+               			console.log('인증 버튼 클릭');
+               			findImgFile();
+            			checkImg();
+				},
+				error : function(xhr) { // 실패 시 호출될 콜백펑션
+					alert(xhr.status);
+				}
+			});
+		});
+		
+		// 사진 존재여부 파악 후 '승인 대기' 표시
+		function checkImg() {
+			console.log("img src len : "+ $('#img').attr('src').length);
+			
+			var app_no = $('#tabel_history tr:eq(2) td:eq(0)').html();
+			var adv_no = $('#tabel_history tr:eq(2) td:eq(1)').html();
+			$.ajax({
+	            type: 'get',
+				data : {adv_no : adv_no}, // 1:지불 , 2:인증 // app_no : app_no 로 변경할 것.
+				url : '/Add_it/certupload',
+	            success: function(responseObj){
+	                //$(this).prop("disabled", false);
+
+ 						if(responseObj.status==1){
+ 							console.log('')
+	    					console.log("$('button:contains('사진||수정')') : " + $('button:contains("사진 찾기")').html());
+	    					console.log("찾기 :"+ $('button:contains("찾기")').parent().next().html());
+	    					//$('#tabel_cert tr:eq(2) td:eq(4)').html("<b>승인 대기<b>");
+	    					$('button:contains("사진||수정")').parent().next().html("<b>승인 대기<b>");
+	    					$('button:contains("사진||수정")').html('수정하기')
+ 							
+ 						} else {
+	    					console.log("찾기 : 해당 폴더에 사진 미존재");
+
+ 						}
+	            }
+	        });
+		} 
+		findImgFile();
+		function findImgFile() {
+			// 사진 찾기
+			$(document).on('click', '#ok_close', function(e){
+				e.preventDefault();
+				//var no = $('#tabel_history > tbody > tr:nth-child(3) > td.appNo').html();
+				var app_no = $('#tabel_history tr:eq(2) td:eq(0)').html();
+				var adv_no = $('#tabel_history tr:eq(2) td:eq(1)').html();
+				var form = $('#imgUpload')[0];
+				var formData = new FormData(form);  
+				formData.append('file', $('#fileSearch')[0].files[0]);			
+				formData.append('adv_no', adv_no);			
+				//$(this).prop("disabled", true);
+				
+				$.ajax({
+		            type: 'POST',
+					url : '/Add_it/certupload',
+					data : formData, 
+					enctype:'multipart/form-data',
+			        processData: false,    
+			        contentType: false,      
+			        cache: false,  
+		            success: function(responseObj){
+		                //$(this).prop("disabled", false);
+		                
+						if(responseObj.status==1){
+		  					$('button:contains("찾기")').parent().next().html("<b>승인 대기<b>");
+		  					console.log("찾기 :"+ $('button:contains("찾기")').parent().next().html());
+		  					//$('#tabel_cert tr:eq(2) td:eq(4)').html("<b>승인 대기<b>");
+						}
+		            }
+		        });
+				
+			});
+		}
+		
+	
+
+		// 모달 창 감추기
+		$("button.cancle_close").click(function() {
+			$(".modal").fadeOut();
+		});
+		
+		// 모달창 띄우기 - 사진 찾기
+		$(document).on('click', 'td .btnCert', function(){
+			console.log('td .btnCert 클릭');
+			$(".modal").fadeIn();
+		});
+
+		// 날짜구하기
+		function compareDate(day) {
+		    var date = new Date(day);
+		    var yy = date.getFullYear().toString().substr(-2);
+		    var mm = date.getMonth()+1;
+		    var dd = date.getDate();
+
+		    var date = new Date();
+		    var yyToday = date.getFullYear().toString().substr(-2)
+		    var mmToday = date.getMonth()+1;
+
+		    return ((yy==yyToday && mm==mmToday)? true : false ); // (yy+"/"+mm+" + true + "+yyToday+"/"+mmToday) :( yy+"/"+mm+" + false + "+yyToday+"/"+mmToday));
+		}
+		  
+		// 인증 기준월
+		function getMonth(day) {
+		    var date = new Date(day);
+		    var yy = date.getFullYear().toString().substr(-2);
+		    var mm = date.getMonth()+1;
+		    
+		    return yy+"년  "+digit(mm)+"월"; 
+		}
+		
+		
+		// 날짜 비교 후 활동 중인 광고 상태 반환
+		function getState(endDate_) {
+		   	var arr = endDate_.split('-');
+		   	var endDate = new Date(arr[0], parseInt(arr[1])-1, arr[2]);
+		   	var today = new Date();		   
+	  		return (endDate > today ? "진행중" : "종료");   
+		}
+		function getDate(d) {
+		    var date = new Date(d);
+		    var yy = date.getFullYear().toString().substr(-2);
+		    var mm = date.getMonth()+1;
+		    var dd = date.getDate();
+		    return yy+"/"+digit(mm)+"/"+digit(dd);
+		}
+		  
+		function getTerm(f, i) {
+		    return getDate(f) + " ~ " +getDate(i);
+		}
+	
+		function digit(d){
+		    if((d+"").length < 2) {
+		        d = "0" + d;
+			}
+		    return d
+		}
+		
+		
+		
+		$(document).on('change', '#fileSearch', handleImgFileSelect);
+		
+		
+        function handleImgFileSelect(e) {
+            var files = e.target.files;
+            var filesArr = Array.prototype.slice.call(files);
+ 
+            filesArr.forEach(function(f) {
+                if(!f.type.match("image.*")) {
+                    alert("확장자는 이미지 확장자만 가능합니다.");
+                    return;
+                }
+                 sel_file = f;
+                 var reader = new FileReader();
+                reader.onload = function(e) {
+                    $("#img").show();
+                    $("#img").attr("src", e.target.result);
+                }
+                reader.readAsDataURL(f);
+            });
+        }
+
+      $(document).on('click', '#removeImg', function(){
+          $("#img").attr("src", "");
+             $("#img").hide();
+      });
+
+   });
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+     };
+</script>
+
+<!-- CSS -->
+<style type="text/css">
+#wrap {
+   border: black 1px solid;
+   width: 950px;
+   /* height: 600px; */
+   padding: 0px 0px 50px 0px;
+   /* min-height: 600px; */
+   display: grid;
+   grid-template-areas: "history history" "cert pay";
+   grid-template-columns: 475px 475px; /* 가로 폭 */
+   grid-template-rows: minmax(400px, auto) minmax(400px, auto); /* 세로 폭*/
+}
+
+#top_section {
+   grid-area: history;
+   /*    grid-column: 1 / 3;
+   grid-row: 1 / 2; */
+   padding: 30px 0px 50px 50px;
+}
+
+#bottom_section1 {
+   grid-area: cert;
+   /*    grid-column: 1 / 2;
+   grid-row: 2 / 3; */
+   padding: 0px 0px 50px 50px;
+   /* visibility: hidden; */
+}
+
+#bottom_section2 {
+   grid-area: pay;
+   /*    grid-column: 2 / 3;
+   grid-row: 3 / 3; */
+   padding: 0px 0px 50px 50px;
+   /* visibility: hidden; */
+}
+
+table.act {
+	/* table-layout:fixed; */
+	width: 100%;
+	text-align: center;
+	vertical-align: top;
+	border: black 1px solid;
+	border-collapse: collapse;
+	min-height: 30px;
+	font-size: large;
+}
+
+th, td {
+	padding: 5px; /* width: 500px; */
+	border: black 1px solid;
+	text-align: center;
+	
+}
+
+#advHistory {
+   font-size:x-large;
+}
+.modal {
+   position: absolute;
+   /* position: relative; */
+   /* position: sticky;  */
+   width: 100%;
+   height: 150%;
+   overflow: 'auto';
+   /* background: rgba(0,0,0,0.5); */
+   top: 0;
+   left: 0;
+   display: none;
+}
+
+.modal_content form[name="img_upload"] {
+   grid-area: "img_upload";
+   /* border: black 1px solid; */
+}
+
+.input[type=file]{
+	display: inline !important;
+	margin: 120px;
+}
+.modal_content form[name="meter"] {
+   grid-area: "meter";
+   /* border: black 1px solid; */
+}
+.modal_content {
+   width: 800px;
+   height: 300px;
+   background: #fff;
+   border-radius: 10px;
+   position: relative;
+   top: 50%;
+   left: 50%;
+   margin-top: -400px;
+   margin-left: -390px;
+   text-align: center;
+   box-sizing: border-box; /*  */
+   padding: 30px 0;
+   line-height: 23px;
+   border: black 3px solid;
+   display: grid;
+   grid-template-areas: "meter img_upload";
+   grid-template-columns: 1fr 1fr; /* 가로 폭 */
+   grid-template-rows: 200px;
+   
+}
+
+.modal_content div .ok_close {
+   position: absolute;
+   right: 120px;
+   bottom: 30px;
+   padding: 10px;
+}
+
+.modal_content div .cancle_close {
+   position: absolute;
+   right: 30px;
+   bottom: 30px;
+   padding: 10px;
+}
+
+/* 현재 스크롤 위치 */
+/*    #log{
+   position:fixed;
+   top:0;
+   left:0;
+   width:100px;
+   height:50px;
+   background-color:rgba(0,0,0,0.7);
+   color:white;
+   text-align:center;
+   line-height:50px;
+   } */
+   
+#imgViewArea {
+   border: 1px black solid;
+   width: 350px;
+   height:250px;
+   background-color: lightgray;
+   margin-left: 20px
+}
+
+#img {
+   border: 1px black solid;
+   width: 350px;
+   height:250px;
+   background-color: lightyellow;
+   display: none;
+}
+</style>
+
+</head>
+<body>
+   <!-- 현재 스크롤 위치 -->
+   <!-- <div id="container">
+   <div id="log">0</div>
+</div> -->
+   <!-- 모달창 -->
+   <div class="modal">
+      <div class="modal_content" title="클릭하면 창이 닫힙니다.">
+         <form id="imgUpload" name="img_upload" method="post" accept=".gif, .jpg, .png"  enctype="multipart/form-data">
+            <div id="imgViewArea">
+               <img id="img" src="" alt="미리보기">
+            </div>
+         </form>
+
+          <form id="imgCert" name="meter" method="post" action="./certupload"><!--  enctype="multipart/form-data" -->
+            <span>광고 부착 사진을 올려주세요.</span><br> <br>
+            <!-- <input type="text" name="t" value="test"> -->
+            <input id='fileSearch' type="file" name="file"> 
+            <input id='removeImg' type="reset" name="reset" value="삭제">
+         </form>
+            <div class="close_btn">
+               <button id="ok_close" form="imgCert" class="ok_close">완료</button> 
+               <button class="cancle_close">닫기</button>
+            </div>
+
+      </div>
+   </div>
+
+   <!-- 상하단 표 -->
+   <section id="wrap">
+
+      <section id=top_section>
+         <span id="advHistory">광고활동 내역</span>
+         <!-- 광고내역 -->
+         <table id="tabel_history" class="act">
+            <tr>
+               <th>신청번호</th>
+               <th>광고번호</th>
+               <th>광고기간</th>
+               <th>광고비(월)</th>
+               <th>진행상태</th>
+               <th>인증 상세</th>
+               <th>입금 상세</th>
+            </tr>
+            <tr class="tr_history" style="display: none">
+               <td class="appNo"></td>
+               <td class="advNo"></td>
+               <td class="advTerm"></td>
+               <td class="price"></td>
+               <td class="state"></td>
+               <td class="detail"><button class="cert_detail" value="">인증</button></td>
+               <td class="detail"><button class="pay_detail" value="">보기</button></td>
+            </tr>
+         </table>
+      </section>
+               <!-- <th class="appNo">신청번호</th>
+               <th class="advNo">광고번호</th>
+               <th class="th_term">광고기간</th>
+               <th class="advTerm">광고비(월)</th>
+               <th class="state">진행상태</th> -->
+
+
+      <section id="bottom_section1">
+         <h2 id="title2">광고활동 인증</h2>
+         <!-- 광고활동인증 -->
+         <table id="tabel_cert" class="act" border="1">
+            <tr>
+               <th class="th_term">기간</th>
+               <th>GPS 이동거리</th>
+               <th>인증(사진)</th>
+               <th>인증 상태</th>
+            </tr>
+            <tr class="tr_cert" style="display: none">
+               <td class="adTerm"></td>
+               <td class="gpsMeter"></td>
+               <td class="cert"><button class="btnCert" value="">사진 찾기</button></td> <!-- <button class="btnCert">인증하기</button> -->
+               <td class="state"></td>
+            </tr>
+         </table>
+      </section>
+      <section id="bottom_section2">
+         <h2 id="title2">광고수익 내역</h2>
+         <table id="tabel_pay"  class="act" border="1">
+            <tr>
+               <th class="th_term">입금일자</th>
+               <th>입금액</th>
+            </tr>
+            <tr class="tr_pay" style="display: none">
+               <td class="payDate"></td>
+               <td class="amount"></td>
+            </tr>
+         </table>
+      </section>
+   </section>
+
+</body>
+</html>

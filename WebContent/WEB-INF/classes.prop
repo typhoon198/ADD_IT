@@ -1,0 +1,16 @@
+#classes.prop
+AccountDAO=com.ai.dao.AccountDAOOracle
+individualDAO=com.ai.dao.IndividualDAOOracle
+AccountDAO=com.ai.dao.AccountDAOOracle
+IndividualDAO=com.ai.dao.IndividualDAOOracle
+advertisementDAO=com.ai.dao.AdvertisementDAOOracle
+applyDAO=com.ai.dao.ApplyDAOOracle
+bankDAO=com.ai.dao.BankDAOOracle
+locationDAO=com.ai.dao.LocationDAOOracle
+accountDAO=com.ai.dao.AccountDAOOracle
+applylineDAO=com.ai.dao.ApplyLineDAOOracle
+verificationDAO=com.ai.dao.VerificationDAOOracle
+CompanyDAO=com.ai.dao.CompanyDAOOracle
+advertisementlineDAO=com.ai.dao.AdvertisementLineDAOOracle
+paymentDAO=com.ai.dao.PaymentDAOOracle
+applylistDAO=com.ai.dao.ApplyListDAOOracle

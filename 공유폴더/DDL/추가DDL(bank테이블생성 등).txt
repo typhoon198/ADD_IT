@@ -1,0 +1,36 @@
+---------apply 테이블 컬럼 app_bank, app_acno 삭제
+alter table apply drop column app_bank;
+alter table apply drop column app_acno;
+
+
+---------bank 테이블 생성
+create table bank(
+in_id varchar2(45),
+bank varchar2(20),
+acno varchar2(30),
+constraint bank_pk PRIMARY KEY (in_id),
+constraint in_id_fk foreign key (in_id) references individual(in_id)
+);
+
+
+---------더미데이터
+INSERT INTO bank VALUES ('indi1', '국민은행', '1111-1111-1111');
+INSERT INTO bank VALUES ('indi2', '신한은행', '2222-2222-2222');
+INSERT INTO bank VALUES ('indi3', '기업은행', '3333-3333-3333');
+INSERT INTO bank VALUES ('indi4', '카카오뱅크', '4444-4444-4444');
+INSERT INTO bank VALUES ('indi5', '농협', '5555-5555-5555');
+INSERT INTO bank VALUES ('indi6', '하나은행', '6666-6666-6666');
+INSERT INTO bank VALUES ('indi7', '국민은행', '7777-7777-7777');
+INSERT INTO bank VALUES ('indi8', '신한은행', '8888-8888-8888');
+INSERT INTO bank VALUES ('indi9', '기업은행', '9999-9999-9999');
+INSERT INTO bank VALUES ('indi10', '카카오뱅크', '1010-1010-1010');
+INSERT INTO bank VALUES ('indi11', '농협', '1000-1000-1111');
+INSERT INTO bank VALUES ('indi12', '하나은행', '1000-1000-1212');
+INSERT INTO bank VALUES ('indi13', '국민은행', '1000-1000-1313');
+INSERT INTO bank VALUES ('indi14', '신한은행', '1000-1000-1414');
+INSERT INTO bank VALUES ('indi15', '기업은행', '1000-1000-1515');
+INSERT INTO bank VALUES ('indi16', '카카오뱅크', '1000-1000-1616');
+commit;
+
+
+select * from bank;

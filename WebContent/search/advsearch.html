@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>광고검색</title>
+    <link rel="stylesheet" href="../public/css/liststyle.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <link href="../public/css/NavStyle.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="public/js/bootstrap.min.js"></script> -->
+    <script src="../public/js/mypage2.js"></script>
+    <style>
+      * {
+        font-family: "Noto Sans KR", sans-serif;
+      }
+      body {
+        height: 1500px;
+        margin: 0px;
+      }
+      #mainNav,
+      div.container-1800,
+      div.logo,
+      a.advButton,
+      a.admin-ok,
+      a.admin-no {
+        text-align: left;
+        height: 90px;
+        color: white;
+        font-weight: 500;
+        word-spacing: 0;
+      }
+      /*상단 네비게이션 바*/
+      #mainNav {
+        background-color: #a3d2ca;
+        width: 100%;
+        border-bottom: #a3d2ca;
+        position: fixed;
+        display: block;
+        z-index: 100;
+        cursor: default;
+        box-sizing: border-box;
+      }
+      /* 네비게이션 바 컨테이너 */
+      #mainNav > div.container-1800 {
+        width: 1800px;
+        margin: 0 50px 0 50px;
+        position: relative;
+        display: flex;
+      }
+      div.logo {
+        width: 203px;
+        min-height: auto;
+        min-width: auto;
+        display: inline;
+        transform: none;
+      }
+      /*로고 이미지 컨테이너*/
+      div.logo > a.img {
+        line-height: 80px;
+        height: 100%;
+        width: 130px;
+        margin: 0 67px 0 0;
+        padding: 16px 0 16px 0;
+        display: block;
+        cursor: pointer;
+        background-size: contain;
+      }
+      /*로고 이미지*/
+      div.logo > a.img > img {
+        vertical-align: top;
+        height: 56px;
+        width: 52px;
+        display: inline;
+        cursor: pointer;
+      }
+      ol,
+      ul {
+        list-style: none;
+      }
+      ul.adv-nav {
+        display: flex;
+        position: relative;
+      }
+      ul.admin-nav {
+        display: flex;
+        position: absolute;
+        right: 350px;
+      }
+      /*광고 등록, 검색 버튼*/
+      ul.adv-nav > li > a.advButton {
+        float: left;
+        font-size: 25px;
+        font-weight: 500;
+        line-height: 20px;
+        text-decoration: none solid rgb(52, 60, 72);
+        width: 147px;
+        padding: 32px 16px 32px 16px;
+        display: block;
+        cursor: pointer;
+        transform: none;
+        box-sizing: border-box;
+      }
+      /*로그인, 로그아웃 버튼*/
+      ul.admin-nav > li > a.admin-ok,
+      a.admin-no {
+        float: right;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 16px;
+        text-decoration: none solid rgb(110, 117, 127);
+        width: 120px;
+        padding: 34px 0 34px 20px;
+        display: block;
+        cursor: pointer;
+      }
+
+      section.base {
+        height: 3000px;
+        height: 95%;
+        width: 1455px;
+        clear: both;
+        margin: auto;
+        border: 1px;
+        padding: 150px 20px 0px;
+      }
+
+      footer {
+        text-align: center;
+        margin: auto;
+        width: 80%;
+      }
+
+      article.sort {
+        border: 1px;
+        width: 97.5%;
+        height: 50px;
+        padding: 20px 0px;
+        margin: 10px auto;
+        float: left;
+        font-size: 35px;
+      }
+      article.sort span {
+        text-align: center;
+      }
+      span.sort:hover {
+        background-color: aquamarine;
+      }
+      article.location {
+        border: 1px;
+        width: 1650px;
+        height: 480px;
+        padding: 50px 20px 0px 20px;
+        margin: 0px auto;
+        float: left;
+        font-size: 26px;
+      }
+      article.pick {
+        border: 1px;
+        width: 1350px;
+        height: 400px;
+        padding: 0px 0px;
+        margin: 0px auto;
+        float: initial;
+        font-size: 16px;
+      }
+      div.location {
+        width: 75px;
+        margin: 0 auto;
+        float: left;
+        clear: both;
+      }
+      button.location {
+        font-size : 0.9em;
+        margin : 4px 4px;
+        padding : 8px 8px;
+      }
+      div.locsearch {
+        float: left;
+        padding: 0px 390px 0px 0px;
+        margin: 0px 0px 30px 0px;
+      }
+      div.location > ul {
+        list-style-type: none;
+        padding: 0px 0px 0px 20px;
+        width: 400px;
+        display: block;
+      }
+      div.location > ul > li {
+        width: 20px;
+        /* height: 31px; */
+        margin-bottom: 5px;
+        /* font-size: 23px; */
+        display: inline;
+      }
+      /* div.location > ul > li:hover {
+        background-color: red;
+      } */
+      article.list {
+        border: 1px;
+        width: 1600px;
+        height: 1000px;
+        padding: 50px 30px;
+        margin: 120px auto;
+        float: left;
+        font-size: 35px;
+      }
+      div.locationSubList {
+        width: 1200px;
+        height: 500px;
+        float: right;
+        font-size: 1.0em;
+        overflow: auto;
+        padding: 0px;
+      }
+      label {
+        margin: 0px;
+        padding: 10px;
+      }
+      ol.locationSubList > li {
+        margin: 0px 0px 0px 0px;
+        padding: 0px 0px 10px 10px;
+        display: inline-block;
+        width: 300px;
+      }
+      input.subLocation {
+        display: none;
+      }
+      input:checked + label {
+        /* font-display: solid; */
+        font-style: italic;
+  		background-color: aquamarine;
+	  }
+    </style>
+    <script>
+    
+    function numberWithCommas(x) {
+ 	   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+ 	};
+    
+      function logined() {
+        $("li > a.admin-no").hide();
+        $("li > a.admin-ok").show();
+      }
+
+      function logouted() {
+        $("li > a.admin-no").show();
+        $("li > a.admin-ok").hide();
+      }
+
+      function checkLogined() {
+        var backurl = "/Add_it/checklogined";
+        $.ajax({
+          url: backurl,
+          success: function (responseObj) {
+            if (responseObj.status === 1) {
+              //로그인된 경우
+              logined();
+            } else {
+              //로그아웃된 경우
+              logouted();
+            }
+          },
+        });
+      }
+
+      function Logout() {
+        var backurl = "/Add_it/logout";
+        $.ajax({
+          url: backurl,
+          method: "get",
+          success: function () {
+            alert("로그아웃 되었습니다.");
+            document.location.reload();
+          },
+          error: function (xhr) {
+            alert("로그아웃 에러");
+          },
+        });
+      }
+
+      function checkIntervalLogined() {
+        window.setInterval(checkLogined, 600000);
+      }
+
+      checkLogined();
+      //checkIntervalLogined();
+    </script>
+    <script>
+      $(function () {
+        //DOM트리에서 article.list객체 찾기
+        var $article = $("article.list");
+
+        /* var href = "./advlist3.html"; */
+        var href = "/Add_it/search/advlist.html";
+
+        $article.load(href, function (responseTxt, statusTxt, xhr) {
+          if (statusTxt == "error")
+            alert("Error: " + xhr.status + ": " + xhr.statusText);
+        });
+
+        var $sortObj = $("body>section>article.sort>span.sort a");
+        /* console.log($sortObj); */
+        $sortObj.click(function () {
+          /* console.log(sortObj); */
+          //클릭된 현재 객체의 href속성값 얻기 : .attr('href');
+          var href = $(this).attr("href");
+          switch (href) {
+            case "/Add_it/search/orderlist1.html":
+            case "/Add_it/search/orderlist2.html":
+            case "/Add_it/search/orderlist3.html":
+            case "/Add_it/search/orderlist4.html":
+              $article.load(href, function (responseTxt, statusTxt, xhr) {
+                if (statusTxt == "error")
+                  alert("Error: " + xhr.status + ": " + xhr.statusText);
+              });
+              return false;
+              break;
+          }
+        });
+
+        //시도 버튼 클릭이벤트
+        var $cityObj = $("button.location");
+        $cityObj.click(function () {
+          var spanHtml = "";
+          var url = "/Add_it/loclist";
+          var $locationSubList = $("ol.locationSubList");
+          var citycode = $(this).val();
+          $.ajax({
+            url: url,
+            data: { citycode: citycode },
+            method: "get",
+            success: function (responseData) {
+              $(responseData).each(function (i, e) {
+            	  if(i==0){return true;}
+                var loc_code = e.loc_code;
+                var loc_name = e.loc_name;
+                /* spanHtml += '<span class="locationSub">'; */
+                spanHtml += '<li value="' + loc_code + '">';
+                spanHtml += "<label>";
+                spanHtml +=
+                  '<input type="radio" name="loc" class="subLocation" value="' +
+                  loc_code +
+                  '"/>';
+                spanHtml += loc_name;
+                spanHtml += "</label>";
+                spanHtml += "</li>";
+                /* spanHtml += "</span>"; */
+                /* console.log($townObj); */
+              });
+              $locationSubList.empty();
+              $locationSubList.html(spanHtml);
+            },
+          });
+          
+          
+          console.log($(this).val());
+          
+          var $divObj = $("div.box-wrapper");
+          var citycode = $(this).val();
+          var trHtml = "";
+          var backurl = "/Add_it/findcityadv";
+          $.ajax({
+            url: backurl,
+            data: { citycode: citycode },
+            method: "get",
+            success: function (responseData) {
+              $(responseData).each(function (i, e) {
+                var adv_no = e.adv_no;
+                var com_name = e.c.com_name;
+                var adv_fee = e.adv_fee;
+                var adv_startmonth = e.adv_startmonth;
+                var adv_endmonth = e.adv_endmonth;
+                trHtml += '<figure class="shape-box shape-box_half">';
+                trHtml += '<img src="../public/images/' + adv_no + '.png" alt="" />';
+                trHtml +=
+                  '<div class="brk-abs-overlay z-index-0 bg-black opacity-60"></div>';
+                trHtml += "<figcaption>";
+                trHtml += '<div class="show-cont">';
+                trHtml += '<h3 class="card-no">' + adv_no + "</h3>";
+                trHtml += '<h4 class="card-main-title">' + com_name + "</h4>";
+                trHtml += "</div>";
+                trHtml += '<p class="card-content">';
+                trHtml +=
+                  com_name +
+                  " 광고를 차량에 부착하세요<br />월 광고비 : " +
+                  numberWithCommas(adv_fee) + "원" +
+                  "<br />";
+                trHtml +=
+                  "일시 : " + adv_startmonth + " ~ " + adv_endmonth + "</p>";
+                trHtml +=
+                  '<a href="/Add_it/search/advdetail.html" target="" class="read-more-btn" id="' +
+                  adv_no +
+                  '">신청하기</a></figcaption>';
+                trHtml += '<span class="after"></span>';
+                trHtml += "</figure>";
+              });
+              $divObj.empty();
+              $divObj.html(trHtml);
+            },
+          });
+          
+          
+          
+          
+        });
+
+        //시군구 라디오 버튼 클릭이벤트
+        /* var $townObj = $("input.subLocation"); */
+        /* var $townObj = $("li > label"); */
+        /* var $townObj = $("span.locationSub"); */
+        var $townObj = $("div.locationSubList > ol.locationSubList");
+        /* console.log($townObj); */
+        /* console.log($townObj); */
+        $townObj.on("click", "li", function () {
+          /* alert("test"); */
+          var $divObj = $("div.box-wrapper");
+          var location = $(this).val();
+          var trHtml = "";
+          var backurl = "/Add_it/findloc";
+          /* alert($(this).val()); */
+          $.ajax({
+            url: backurl,
+            data: { location: location },
+            method: "get",
+            success: function (responseData) {
+              $(responseData).each(function (i, e) {
+                var adv_no = e.adv_no;
+                var com_name = e.c.com_name;
+                var adv_fee = e.adv_fee;
+                var adv_startmonth = e.adv_startmonth;
+                var adv_endmonth = e.adv_endmonth;
+                trHtml += '<figure class="shape-box shape-box_half">';
+                trHtml += '<img src="../public/images/' + adv_no + '.png" alt="" />';
+                trHtml +=
+                  '<div class="brk-abs-overlay z-index-0 bg-black opacity-60"></div>';
+                trHtml += "<figcaption>";
+                trHtml += '<div class="show-cont">';
+                trHtml += '<h3 class="card-no">' + adv_no + "</h3>";
+                trHtml += '<h4 class="card-main-title">' + com_name + "</h4>";
+                trHtml += "</div>";
+                trHtml += '<p class="card-content">';
+                trHtml +=
+                  com_name +
+                  " 광고를 차량에 부착하세요<br />월 광고비 : " +
+                  numberWithCommas(adv_fee) + "원" +
+                  "<br />";
+                trHtml +=
+                  "일시 : " + adv_startmonth + " ~ " + adv_endmonth + "</p>";
+                trHtml +=
+                  '<a href="/Add_it/search/advdetail.html" class="read-more-btn" id="' +
+                  adv_no +
+                  '">신청하기</a></figcaption>';
+                trHtml += '<span class="after"></span>';
+                trHtml += "</figure>";
+              });
+              $divObj.empty();
+              $divObj.html(trHtml);
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+  <body id="page-top">
+    <nav class="navbar" id="mainNav">
+      <div class="container-1800">
+        <div class="logo">
+          <a class="img" href="/Add_it/main.html">
+            <img src="../public/images/addit_logo.png" alt="" />
+          </a>
+        </div>
+        <ul class="adv-nav">
+          <li><a class="advButton" href="/Add_it/addadv/addadv.html">광고 등록</a></li>
+          <li><a class="advButton" href="/Add_it/search/advsearch.html">광고 검색</a></li>
+        </ul>
+        <ul class="admin-nav">
+          <li><a class="admin-no" href="/Add_it/admin/login.html">로그인</a></li>
+          <li><a class="admin-no" href="/Add_it/admin/signup.html">회원가입</a></li>
+          <li><a class="admin-ok" href="javascript:Logout()">로그아웃</a></li>
+          <li><a class="admin-ok" href="#" id="my-page">마이페이지</a></li>
+        </ul>
+      </div>
+    </nav>
+    <section class="base">
+      <article class="sort">
+        <span>정렬 기준</span
+        >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="sort">
+          <a class="a" href="/Add_it/search/orderlist1.html" style="text-decoration:none"
+            >최근 등록 순</a
+          ></span
+        >&nbsp;&nbsp;&nbsp;
+        <span class="sort"
+          ><a class="b" href="/Add_it/search/orderlist2.html" style="text-decoration:none"
+            >시작월 순</a
+          ></span
+        >&nbsp;&nbsp;&nbsp;<span class="sort"
+          ><a class="c" href="/Add_it/search/orderlist3.html" style="text-decoration:none">기간 순</a></span
+        >&nbsp;&nbsp;&nbsp;
+        <span class="sort"
+          ><a class="d" href="/Add_it/search/orderlist4.html" style="text-decoration:none"
+            >월 광고비 순</a
+          ></span
+        >&nbsp;&nbsp;&nbsp;
+      </article>
+      <article class="location">
+        <div class="locsearch">지역별검색</div>
+        <div class="locpick">지역선택</div>
+        <div class="location">
+          <ul>
+            <li>
+              <button type="button" class="location" value="11">서울</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="21">부산</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="22">대구</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="23">인천</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="24">광주</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="25">대전</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="26">울산</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="29">세종</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="31">경기</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="32">강원</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="33">충북</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="34">충남</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="35">전북</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="36">전남</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="37">경북</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="38">경남</button>
+            </li>
+            <li>
+              <button type="button" class="location" value="39">제주</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="locationSubList"><ol class="locationSubList"></ol></div>
+
+        <!-- <div class="pickloc" style="padding: 0px 50px; display: inline"> -->
+        <!-- <span class="locationSub"
+              ><label><input type="radio" name="location" value="" /></label
+            ></span> -->
+        <!-- </div> -->
+      </article>
+      <!-- <article class="search">검색 기준 :</article> -->
+      <article class="list">
+        광고목록
+        <div class="box-wrapper"></div>
+        <!-- <div class="box-wrapper"></div> advlist3가 로드되면 있음 -->
+      </article>
+    </section>
+  </body>
+</html>

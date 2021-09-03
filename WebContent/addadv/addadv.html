@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>광고검색</title>
+	<link rel="stylesheet" href="../public/css/liststyle.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
+	<link href="../public/css/NavStyle.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- <script src="public/js/bootstrap.min.js"></script> -->
+	<style>
+		* {
+			font-family: 'Noto Sans KR', sans-serif;
+		}
+
+		body {
+			height: 2000px;
+		}
+
+		#mainNav,
+		div.container-1800,
+		div.logo,
+		a.advButton,
+		a.admin-ok,
+		a.admin-no {
+			text-align: left;
+			height: 90px;
+			color: white;
+			font-weight: 500;
+			word-spacing: 0;
+		}
+
+		/*상단 네비게이션 바*/
+		#mainNav {
+			background-color: #A3D2CA;
+			width: 100%;
+			border-bottom: #A3D2CA;
+			position: fixed;
+			display: block;
+			z-index: 100;
+			cursor: default;
+			box-sizing: border-box;
+		}
+
+		/* 네비게이션 바 컨테이너 */
+		#mainNav>div.container-1800 {
+			width: 1800px;
+			margin: 0 50px 0 50px;
+			position: relative;
+			display: flex;
+		}
+
+		div.logo {
+			width: 203px;
+			min-height: auto;
+			min-width: auto;
+			display: inline;
+			transform: none;
+		}
+
+		/*로고 이미지 컨테이너*/
+		div.logo>a.img {
+			line-height: 80px;
+			height: 100%;
+			width: 130px;
+			margin: 0 67px 0 0;
+			padding: 16px 0 16px 0;
+			display: block;
+			cursor: pointer;
+			background-size: contain;
+		}
+
+		/*로고 이미지*/
+		div.logo>a.img>img {
+			vertical-align: top;
+			height: 56px;
+			width: 52px;
+			display: inline;
+			cursor: pointer;
+		}
+
+		ol,
+		ul {
+			list-style: none;
+		}
+
+		ul.adv-nav {
+			display: flex;
+			position: relative;
+		}
+
+		ul.admin-nav {
+			display: flex;
+			position: absolute;
+			right: 350px;
+		}
+
+		/*광고 등록, 검색 버튼*/
+		ul.adv-nav>li>a.advButton {
+			float: left;
+			font-size: 25px;
+			font-weight: 500;
+			line-height: 20px;
+			text-decoration: none solid rgb(52, 60, 72);
+			width: 147px;
+			padding: 32px 16px 32px 16px;
+			display: block;
+			cursor: pointer;
+			transform: none;
+			box-sizing: border-box;
+		}
+
+		/*로그인, 로그아웃 버튼*/
+		ul.admin-nav>li>a.admin-ok,
+		a.admin-no {
+			float: right;
+			font-size: 20px;
+			font-weight: 500;
+			line-height: 16px;
+			text-decoration: none solid rgb(110, 117, 127);
+			width: 100px;
+			padding: 34px 0 34px 20px;
+			display: block;
+			cursor: pointer;
+		}
+
+		section.base {
+			height: 1250px;
+			height: 95%;
+			width: 1450px;
+			clear: both;
+			margin: auto;
+			border: 1px solid;
+			padding: 150px 20px 0px;
+		}
+
+		footer {
+			text-align: center;
+			margin: auto;
+			width: 80%;
+		}
+
+		ol,
+		li {
+			list-style-type: none;
+			display: inline-block;
+		}
+
+		article {
+			margin: 40px 0px 80px 25px;
+			position: relative;
+		}
+
+		div.title {
+			font-size: 2.5em;
+			font-weight: bold;
+		}
+
+		div.subtitle {
+			font-size: 2em;
+			font-weight: 600;
+		}
+
+		div.location {
+			position: relative;
+			left: 100px;
+		}
+
+		button.sido {
+			font-size: 1.3em;
+			padding: 15px 10px;
+			margin: 3px;
+		}
+
+		div.sidoList {
+			width: 330px;
+			height: 400px;
+			display: inline-block;
+		}
+
+		div.locationSubList {
+			position: absolute;
+			left: 340px;
+			width: 980px;
+			height: 400px;
+			overflow: scroll;
+			display: inline-block;
+		}
+
+		div.locationSubList>ol.locationSubList li {
+			font-size: 1.5em;
+			width: 300px;
+			margin-top: 8px;
+			margin-bottom: 8px;
+		}
+
+		input.selectedLoc {
+			width: 180px;
+			font-size: 1.1em;
+		}
+
+		span.calc {
+			position: absolute;
+			left: 925px;
+			font-size: 1.2em;
+			color: blue;
+		}
+
+		input.read {
+			border-style: none;
+			color: blue;
+			width: 115px;
+			font-size: 1.1em;
+			text-align: center;
+		}
+
+		.one {
+			position: relative;
+			left: 3%;
+			font-size: 1.5em;
+		}
+
+		span.twohalf {
+			position: absolute;
+			left: 55%;
+			font-size: 1.5em;
+		}
+
+		span.twothird {
+			position: absolute;
+			left: 32%;
+			font-size: 1.5em;
+		}
+
+		input {
+			font-size: 1.1em;
+		}
+
+		input[type='month'] {
+			width: 220px;
+		}
+
+		input[type='number'] {
+			width: 200px;
+			text-align: right;
+			font-size: 1.1em;
+		}
+
+		div.maxInfo {
+			position: relative;
+			left: 110px;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
+		input#filename {
+			position: absolute;
+			left: 300px;
+		}
+
+		textarea#intro {
+			position: absolute;
+			left: 760px;
+		}
+
+		img#pre {
+			position: absolute;
+			left: 80px;
+			width: 300px;
+		}
+
+		button#add {
+			position: absolute;
+			top: 250px;
+			right: 50px;
+			font-size: 1.8em;
+		}
+
+		button#upBtn {
+			position: absolute;
+			right: 50px;
+			font-size: 1.5em;
+			visibility: hidden;
+		}
+
+		input#bt {
+			width: 500px;
+		}
+
+		ol.selected input {
+			width: 260px;
+		}
+	</style>
+	<script>
+		/*
+	시도코드	시도명칭
+		11  서울특별시
+		21	    부산광역시
+		22  	대구광역시
+		23	    인천광역시
+		24	    광주광역시
+		25	    대전광역시
+		26	    울산광역시
+		29	    세종시
+		31	    경기도
+		32	    강원도
+		33	    충청북도
+		34	    충청남도
+		35	    전라북도
+		36	    전라남도
+		37	    경상북도
+		38	    경상남도
+		39	    제주도
+	*/
+		function numberWithCommas(x) {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		};
+
+		//날짜형식을 2021-05-05형식으로 변환(화면출력용)
+		function dateToStr(date) {
+			var sYear = date.getFullYear();
+			var sMonth = date.getMonth() + 1;
+			var sDate = date.getDate();
+			sMonth = sMonth > 9 ? sMonth : "0" + sMonth;
+			sDate = sDate > 9 ? sDate : "0" + sDate;
+			return sYear + "-" + sMonth + "-" + sDate;
+		}
+
+		//기간 계산 함수
+		function monthBetween(startDay, endDay) {
+			var termMiliSec = endDay.getTime() - startDay.getTime();
+			var term = termMiliSec / ((60 * 1000 * 60 * 24 * 30));
+			return Math.round(term);
+		}
+		//이미지 미리보기
+		function readInputFile(input) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					$('#pre').attr("src", e.target.result);
+				}
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+
+		//업종
+		const fnbt = {
+			1: '병의원',
+			2: '맛집/카페',
+			3: '생활서비스(청소,이사,세탁)',
+			4: '인테리어/설비',
+			5: '학원/교육',
+			6: '부동산중개업소',
+			7: '유통(마트,문구,서점 등)',
+			8: '법무/세무/회계',
+			9: '헤어/뷰티/미용/스파',
+			10: '스포츠/헬스/레저',
+			11: '화랑/출판/공방',
+			12: '공공/단체/정책/홍보',
+			13: '영화/연출/미술',
+			14: '시장/거리',
+			15: '호텔/숙박/캠핑',
+			16: '기타',
+		};
+
+		const fnct = {
+			0: '상관없음',
+			1: '경차',
+			2: '승용차',
+			3: 'SUV',
+			4: '대형차',
+		};
+		//fn[adv_cartype]
+
+
+		$(function () {
+			//[1.페이지 로드시 업체명, 업종 불러오기]
+			var url = "/Add_it/addload";
+			$.ajax({
+				url: url,
+				method: 'get',
+				success: function (responseObj) {
+					// 비로그인:0 / 개인회원로그인:1 / 기업회원로그인:2 / 업체명,업종 조회 실패-1
+					switch (responseObj.status) {
+						case 2:
+							var name = responseObj.name;
+							var bt = responseObj.bt;
+							$('input#name').val(name);
+							$('input#bt').val(fnbt[bt]);
+							break;
+						case 1:
+							$('#mainNav > div > div > a').trigger('click');
+							alert(responseObj.msg);
+							break;
+						case 0:
+							$('#mainNav > div > div > a').trigger('click');
+							alert(responseObj.msg);
+							break;
+						case -1:
+							break;
+					}
+				},
+			});
+
+			//[2.시도변경시마다 시군구 체크박스생성]
+			var $cityObj = $('button.sido');
+			var $locArr = $('ol.selected input');
+			$cityObj.click(function () {
+				$locArr.val("");//선택한 시군구 지우기
+				var liHtml = '';
+				var locUrl = '/Add_it/loclist';
+				var $locationSubList = $('ol.locationSubList');
+				var citycode = $(this).val();
+				$.ajax({
+					url: locUrl,
+					data: { citycode: citycode },
+					method: 'get',
+					success: function (responseData) {
+						$(responseData).each(function (i, e) {
+							var loc_code = e.loc_code;
+							var loc_name = e.loc_name;
+							liHtml += '<li class="locationSub">';
+							liHtml += '<label><input type="checkbox" class="subLocation" value="' + loc_code + '"/>' + loc_name + '</label>';
+							liHtml += '</li>';
+
+						});
+						$locationSubList.empty();
+						$locationSubList.html(liHtml);
+					},
+				});
+			});
+
+			/* 서울전체 인천전체는 큐를 이용해서 해보기
+			class Queue {
+				constructor() {
+					this.array = [];
+				}
+				enqueue(data) {
+					this.array.push(data);
+				} dequeue() {
+					return this.array.shift();
+				} toString() {
+					let str = "";
+					for (let i = 0; i < this.array.length; i++) {
+						str = str + this.array[i] + "\n"
+					}
+					return str;
+				}
+				head() {
+					return this.array[0]
+				}
+				tail() {
+					return this.array[this.array.length - 1];
+				}
+				empty() {
+					if (this.array.length == 0) {
+						return true;
+					}
+					return false;
+				}
+			}
+			*/
+			//[3.광고 희망 지역 다중 선택]
+			var $locationSubList = $('ol.locationSubList');
+			$locationSubList.on("change", 'li', function () {
+				var cnt = 0;
+				//var $locArr = $('ol.selected input');
+				//oi li로 처리하지않고 배열로 처리
+				var $loc1 = $('ol.selected li:nth-child(1)').find('input');
+				var $loc2 = $('ol.selected li:nth-child(2)').find('input');
+				var $loc3 = $('ol.selected li:nth-child(3)').find('input');
+				if ($loc1.val() != "") {
+					cnt++;
+				}
+				if ($loc2.val() != "") {
+					cnt++;
+				}
+				if ($loc3.val() != "") {
+					cnt++;
+				}
+				var nId = $(this).find('input').val();
+				var nVal = $(this).find('label').text();
+				//1.서울 전체버튼을 선택했을 때
+				if ($(this).index() == 0) {
+					$locArr.val("");
+					$locArr.attr("id", "");
+					//1-1.전체 체크하는경우
+					if ($(this).find('input').is(":checked")) {
+						//서울전체를 제외하고 나머지 체크 해지
+						$('ol.locationSubList input').not(':first').prop("checked", false);
+						$loc1.val(nVal);
+						$loc1.attr("id", nId);
+					}
+					//2.서울 종로구 버튼을 선택했을때
+				} else {
+					//2-1.서울 종로구 체크하는경우
+					if ($(this).find('input').is(":checked")) {
+						//2-1-1.서울 전체가 체크되어있는경우 체크해지
+						if ($loc1.val().substr(-2) == "전체") {
+							$('ol.locationSubList input:first').prop("checked", false);
+							$loc1.val(nVal);
+							$loc1.attr("id", nId);
+							//2-1-2.서울 전체가 체크되어있지 않은경우 추가
+						} else {
+							if (cnt > 2) {
+								alert('지역은 최대 3개까지 선택가능합니다.');
+								$(this).find('input').prop("checked", false);
+								return false;
+							}
+							$locArr.each(function (i, e) {
+								if (!$(this).val()) {
+									$(this).attr("id", nId);
+									$(this).val(nVal);
+									return false;	//비어있는 칸에 입력후 반복문종료
+								}
+							});
+						}
+					} else {
+						$locArr.each(function (i, e) {
+							if ($(this).val() == nVal) {
+								$(this).val("");
+								return false;	//서울 종로구 찾고 지운후 반복문종료
+							}
+						});
+					}
+				}
+			});
+
+			//[4.입력값에 따라 화면에 내용바꾸기]
+			var $budget = $('#budget');
+			var $term = $('span#term');
+			var $start = $('input[name=start]');
+			var $end = $('input[name=end]');
+			var now = new Date();
+			var deadline = now.getTime() + (15 * 24 * 60 * 60 * 1000);
+			//시작월 입력 또는 수정시 시작일,기간 자동계산
+			$('input[type=month]').on('change', function (e) {
+				var $startMonth = $('input#startMonth');
+				var $endMonth = $('input#endMonth');
+				var startDay = new Date($startMonth.val());
+				/*
+				 *[종료일 계산 과정]
+				 *input month 2021-05
+				 *tempDay = Date('2021-05')
+				 *tempDay.getFullYear()=> 2021
+				 *tempDay.getMonth+1 => 5  (0~11)
+				 *endDay = Date(2021,5,0)=>2021년 6월 1일(Date(2021,5,1))의 전날 =>5월 말일
+				 */
+				var tempDay = new Date($endMonth.val());
+				var endDay = new Date(tempDay.getFullYear(), tempDay.getMonth() + 1, 0);
+				var term = monthBetween(startDay, endDay);
+				if (e.target = $startMonth) {
+
+					//5월 1일 시작일로 설정시 현재날짜가 4월 15일 전
+					if (startDay < deadline) {
+						alert('현재 시간기준 선택할수 없는 시작월입니다.');
+						$('input[type=month]').val("");
+						$start.val("");
+						$end.val("");
+						$term.text("");
+						return false;
+					}
+					if ($endMonth.is(":disabled")) {
+						$endMonth.attr("disabled", false); //시작월 입력시 종료월 활성화
+					}
+				}
+
+				if (term < 1) {	//개간이 1개월 이상이면 전체초기화
+					alert('광고 최소 1개월 이상 입니다.');
+					$('input[type=month]').val("");
+					$start.val("");
+					$end.val("");
+					$term.text("");
+					return false;
+				}
+				$start.val(dateToStr(startDay));
+				if (!isNaN(endDay)) { $end.val(dateToStr(endDay)) };
+				if (!isNaN(term)) { $term.text(term + "개월") };
+			});
+			//최대 모집인원,1인 월 광고비 값 변경시 월 광고비 예산 자동계산
+			$('input[type=number]').change(function () {
+				let total = $('input[name=total]').val();
+				let fee = $('input[name=fee]').val();
+				$budget.text(numberWithCommas(total * fee));
+			});
+
+			//업로드전  이미지 미리보기
+			$('#filename').on('change', function () {
+				readInputFile(this);
+			});
+			/*
+						$('#upBtn').click(function () {
+							$.ajax({
+								type: 'POST',
+								url: '/Add_it/addupload',
+								data: formData,
+								enctype: 'multipart/form-data',
+								processData: false,
+								contentType: false,
+								cache: false,
+								success: function (responseObj) {
+									alert(responseObj);
+									//$(this).prop("disabled", false);
+									console.log("승인대기")
+								}
+							});
+							return false;
+						});
+			*/
+			//광고등록
+			$('button#add').on('click', function (event) {
+				var $loc1 = $('input[name=location1]');
+				var $loc2 = $('input[name=location2]');
+				var $loc3 = $('input[name=location3]');
+				var fee = $('input[name=fee]').val();
+
+				console.log("1");
+				if ($loc1.val() == "" && $loc2.val() == "" && $loc3.val() == "") {
+					$('div.locationSubList').focus();
+					alert('지역을 최소 1개이상 선택해주세요');
+					return false;
+				}
+				//if($('input[name=cartype]').attr('id')=="")   radio
+
+				if ($('input[name=fee]').val() == "") {
+					$('input[name=fee]').focus();
+					alert('1인당 월 광고비를 입력해주세요');
+					return false;
+				}
+				if ($('input[name=total]').val() == "") {
+					$('input[name=total]').focus();
+					alert('모집인월을 입력해주세요');
+					return false;
+				}
+				if ($('input[name=start]').val() == "") {
+					$('input#startMonth').focus();
+					alert('시작월을 입력해주세요');
+					return false;
+				}
+				if ($('input[name=end]').val() == "") {
+					$('input#endMonth').focus();
+					alert('종료월을 입력해주세요');
+					return false;
+				}
+
+				if ($('input#filename').val() == "") {
+					$('input#filename').focus();
+					alert('광고사진을 업로드해주세요');
+					return false;
+				}
+				var addurl = '/Add_it/add';
+				$.ajax({
+					url: addurl,
+					method: 'get',
+					data: {
+						location1: $loc1.attr('id'),
+						location2: ($loc2.val() == "" ? 0 : $loc2.attr('id')),
+						location3: ($loc3.val() == "" ? 0 : $loc3.attr('id')),
+						fee: $('input[name=fee]').val(),
+						cartype: $('input[name=cartype]').val(),
+						start: $('input[name=start]').val(),
+						end: $('input[name=end]').val(),
+						total: $('input[name=total]').val(),
+					},
+					success: function (responseObj) {
+						alert(responseObj.msg);
+						$('button#upBtn').trigger('click');
+
+					}, error: function (xhr) {
+					},
+				});
+
+			});
+		});
+
+	</script>
+</head>
+
+<body id="page-top">
+	<nav class="navbar" id="mainNav">
+		<div class="container-1800">
+			<div class="logo">
+				<a class="img" onclick="location.href='../'"> <img src="../public/images/addit_logo.png" alt="">
+				</a>
+			</div>
+			<ul class="adv-nav">
+				<li><a class="advButton" href="/Add_it/addadv/addadv.html">광고 등록</a></li>
+				<li><a class="advButton" href="/Add_it/search/advsearch.html">광고 검색</a></li>
+			</ul>
+			<ul class="admin-nav">
+				<li><a class="admin-no" href="/Add_it/admin/login.html">로그인</a></li>
+				<li><a class="admin-no" href="/Add_it/admin/signup.html">회원가입</a></li>
+				<li><a class="admin-ok" href="javascript:Logout()">로그아웃</a></li>
+				<li><a class="admin-ok" href="#" id="my-page">마이페이지</a></li>
+			</ul>
+		</div>
+	</nav>
+	<section class="base">
+		<div class="title">광고 등록</div>
+		<article>
+			<div class="subtitle">기본정보</div>
+			<hr>
+			<!--기업인지 확인하고 맞으면 업체명,업종 select해서 받아오기-->
+			<span class="one">업체명 : <input type="text" id="name" readonly />
+			</span> <span class="twohalf">업종 : <input type="text" id="bt" readonly />
+			</span>
+		</article>
+		<article>
+			<div class="subtitle">광고정보</div>
+			<hr>
+			<div class="one">
+				<span>지역 : </span>
+				<ol class="selected">
+					<li><input name="location1" form="addform" class="selectedLoc" readonly></li>
+					<li><input name="location2" form="addform" class="selectedLoc" readonly></li>
+					<li><input name="location3" form="addform" class="selectedLoc" readonly></li>
+				</ol>
+				<input type="reset" form="addform" value="초기화" />
+			</div>
+			<div class="maxInfo">(최대 3개까지 선택가능)</div>
+			<div class="location">
+				<div class="sidoList">
+					<ol>
+						<li><button type="button" class="sido" value="11">서울</button></li>
+						<li><button type="button" class="sido" value="21">부산</button></li>
+						<li><button type="button" class="sido" value="22">대구</button></li>
+						<li><button type="button" class="sido" value="23">인천</button></li>
+						<li><button type="button" class="sido" value="24">광주</button></li>
+						<li><button type="button" class="sido" value="25">대전</button></li>
+						<li><button type="button" class="sido" value="26">울산</button></li>
+						<li><button type="button" class="sido" value="29">세종</button></li>
+						<li><button type="button" class="sido" value="31">경기</button></li>
+						<li><button type="button" class="sido" value="32">강원</button></li>
+						<li><button type="button" class="sido" value="33">충북</button></li>
+						<li><button type="button" class="sido" value="34">충남</button></li>
+						<li><button type="button" class="sido" value="35">전북</button></li>
+						<li><button type="button" class="sido" value="36">전남</button></li>
+						<li><button type="button" class="sido" value="37">경북</button></li>
+						<li><button type="button" class="sido" value="38">경남</button></li>
+						<li><button type="button" class="sido" value="39">제주</button></li>
+					</ol>
+				</div>
+				<div class=" locationSubList">
+					<ol class=" locationSubList">
+						<!--시군구 리스트-->
+					</ol>
+				</div>
+			</div>
+		</article>
+		<article>
+			<label><span class="one">시작월 : <input type="month" id="startMonth" />
+				</span></label> <label><span class="twothird">종료월 : <input type="month" id="endMonth" disabled />
+				</span></label> <span class="calc">→ 광고기간 : <input name="start" form="addform" value="" class="read"
+					readonly required /> ~ <input name="end" form="addform" value="" class="read" readonly required />
+				<span id="term">
+					<!--기간-->
+				</span>
+			</span>
+
+		</article>
+		<article>
+			<label><span class="one">모집인원 : <input type="number" form="addform" name="total" min="10" max="1000"
+						value="10" step="5" required />명
+				</span></label> <label><span class="twothird">1인당 월 광고비 : <input type="number" form="addform" name="fee"
+						value="10000" step="1000" required /> 원
+				</span></label> <span class="calc">→ 광고예산 : 월 <span id='budget'>100,000</span>원
+				(모집률 100% 기준)
+			</span>
+		</article>
+		<article>
+			<form id="addform" action="/Add_it/add" method="get" accept-charset="utf-8">
+
+				<div class="one">
+					<span>희망차종 : </span> <label><span> <input type="radio" name="cartype" value="0" checked /> 상관없음
+						</span></label><label><span> <input type="radio" name="cartype" value="1" /> 경차
+						</span></label> <label><span> <input type="radio" name="cartype" value="2" /> 승용차
+						</span></label> <label><span> <input type="radio" name="cartype" value="3" /> SUV
+						</span></label> <label><span> <input type="radio" name="cartype" value="4" /> 대형차
+						</span></label>
+				</div>
+			</form>
+		</article>
+		<article class="up">
+			<form method="post" action="/Add_it/addupload" enctype="multipart/form-data">
+				<div>
+					<span class="one">광고이미지 : </span> <span> <input type="file" name="img" id='filename' accept=".png"
+							required /></span> <span class="twohalf"> 광고소개</span>
+				</div>
+				<div class="one">
+					<img src="" alt="미리보기" id="pre">
+					<textarea id="intro" name="intro" rows="6" cols="42" maxlength="255"></textarea>
+				</div>
+				<div>
+					<button id="upBtn">파일업로드</button>
+				</div>
+			</form>
+			<button type="button" form="addform" id="add">등록하기</button>
+
+		</article>
+	</section>
+	<footer>
+		<!-- 사업자등록번호 : 201-81-21515 (주)스타벅스커피 코리아 대표이사 : 송 데이비드 호섭
+		TEL : 1522-3232 개인정보 책임자 : 하익성 ⓒ 2021 Starbucks Coffee Company. All
+		Rights Reserved.  -->
+	</footer>
+</body>
+<script>
+	function logined() {
+		$('li > a.admin-no').hide();
+		$('li > a.admin-ok').show();
+	}
+
+	function logouted() {
+		$('li > a.admin-no').show();
+		$('li > a.admin-ok').hide();
+	}
+
+	function Logout() {
+		var backurl = '/Add_it/logout';
+		$.ajax({
+			url: backurl,
+			method: 'get',
+			success: function () {
+				alert("로그아웃 되었습니다.");
+				document.location.reload();
+			},
+			error: function (xhr) {
+				alert("로그아웃 에러");
+			},
+		});
+	}
+
+	function checkLogined() {
+		var backurl = "/Add_it/checklogined";
+		$.ajax({
+			url: backurl,
+			success: function (responseObj) {
+				if (responseObj.status == 1) {
+					//로그인된 경우
+					logined();
+				} else {
+					//로그아웃된 경우
+					logouted();
+				}
+			},
+		});
+	}
+
+	function checkIntervalLogined() {
+		window.setInterval(checkLogined, 600000);
+	}
+
+	logouted();
+	checkLogined();
+	/*  checkUserType();
+	  checkIntervalLogined();*/
+
+
+	// 카카오 간편 로그인 실패시
+	$.urlParam = function (name) {
+		var results = new RegExp('[\?&]' + name + '=([^&#]*)')
+			.exec(window.location.href);
+		if (results == null) {
+			return 0;
+		}
+		return results[1] || 0;
+	}
+	$(function () {
+		if ($.urlParam('login') === "fail") {
+			alert("카카오 간편로그인 실패.");
+		}
+	});
+</script>
+
+</html>

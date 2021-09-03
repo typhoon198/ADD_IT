@@ -1,0 +1,226 @@
+body {
+    font-family: "Noto Sans Korean", sans-serif;
+    background-color: #F1F1F1;
+    line-height: 1;
+    font-weight: 400;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+input, label, select, button, textarea {
+    border: 0;
+    padding: 0;
+    vertical-align: middle;
+    white-space: normal;
+    background: none;
+    line-height: 1;
+    font-family: inherit;
+}
+p, table {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+ul {
+    width: 840px;
+    list-style-type: none;
+    list-style-position: outside;
+    text-decoration: none solid rgb(51, 51, 51);
+}
+input, textarea {
+    box-sizing: content-box;
+}
+select {
+    padding: 0 10px 0 10px;
+}
+label {
+    line-height: 20px;
+    text-decoration: none solid rgb(67, 77, 94);
+    text-align: left;
+}
+div {
+    display: block;
+    font-size: 20px;
+    vertical-align: baseline;
+}
+footer {
+    display: block;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+.page_container {
+    padding: 2em 2em 6em;
+    background-color: white;
+    width: 1000px;
+    margin: auto;
+}
+.page_top {
+    width: 1000px;
+    height: 130px;
+    background-color: #A3D2CA;
+}
+.page_top h2 {
+    color: white;
+}
+.page_top_title {
+    padding: 30px 110px 0 110px;
+}
+.page_middle {
+    border: #e3e3ea solid 1px;
+}
+.join_form {
+    margin: 0 auto;
+    width: 900px;
+}
+.join_form li {
+    margin-top: 30px;
+}
+.join_form label {
+    display: block;
+    font-size: 20px;
+    font-weight: 550;
+    color: #434D5E;
+    margin-bottom: 10px;
+}
+.addr_div {
+    margin-top: 20px;
+}
+.join_form .addr_div > li {
+    margin-top: 10px;
+}
+.join_form > ul > li > span {
+    font-size: 0.9em;
+    margin-left: 5px;
+    margin-right: 12px;
+    font-weight: 510;
+}
+.renew_input {
+    width: 540px;
+    height: 60px;
+    border-radius: 4px;
+    border: solid 1px #ebeff2;
+    background-color: #fbfbfc;
+    transition: all .2s;
+    display: inline-block;
+}
+.renew_input:hover {
+    border: solid 1px #434d5e;
+}
+.renew_input input {
+    width: 100%;
+    height: 60px;
+    font-size: 20px;
+    color: #434d5e;
+    text-indent: 20px;
+}
+/*업종코드*/
+.input_box_bt {
+    width: 98%;
+    height: 60px;
+    transition: all .2s;
+    display: inline-block;
+}
+.input_box_bt input:hover {
+    border: solid 1px #434d5e;
+}
+/*이메일*/
+.input_box_m {
+    height: 60px;
+    transition: all .2s;
+    display: inline-block;
+}
+.input_box_m input:hover {
+    border: solid 1px #434d5e;
+}
+.input_box_m input {
+    width: 180px;
+    height: 60px;
+    font-size: 15px;
+    text-indent: 10px;
+    border-radius: 4px;
+    border: solid 1px #ebeff2;
+    background-color: #fbfbfc;
+}
+.input_box_m select {
+    width: 180px;
+    height: 60px;
+    font-size: 15px;
+    text-indent: 10px;
+    border-radius: 4px;
+    border: solid 1px #ebeff2;
+}
+button.zip_search {
+    height: 60px;
+    width: 150px;
+    border-radius: 4px;
+    background-color: #A3D2CA;
+    margin-left: 10px;
+    font-size: 17px;
+    font-weight: 510;
+    color: #ffffff;
+    cursor: pointer;
+}
+button.id_search {
+    height: 60px;
+    width: 150px;
+    border-radius: 4px;
+    background-color: #A3D2CA;
+    margin-left: 10px;
+    font-size: 17px;
+    font-weight: 510;
+    color: #ffffff;
+    cursor: pointer;
+}
+div#message1, div#message2, div#message3 {
+    font-size: 15px;
+    text-align: left;
+    height: 20px;
+    padding-top: 5px;
+    line-height: 20px;
+    color: #FF0000;
+}
+.box_line {
+    width: 100%;
+    height: 0px;
+    margin: 3em auto 2em;
+    border: solid 1px #ebeff2;
+}
+.btn_submit {
+    float: right;
+    width: 250px;
+    height: 60px;
+    border-radius: 4px;
+    background: #A3D2CA;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    cursor: pointer;
+}
+footer.link_box {
+    color: #6e757f;
+    /*display: inline-block;*/
+}
+footer.link_box a {
+    font-size: 18px;
+    color: #6e757f;
+    text-decoration: underline;
+}
+footer.link_box p {
+    vertical-align: baseline;
+    font-size: 18px;
+    color: #6e757f;
+}
+.link_box::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+.link_box_left {
+    float: left;
+    padding-top: 3px;
+    line-height: 1.5;
+}
+.link_box_right {
+    float: right;
+}

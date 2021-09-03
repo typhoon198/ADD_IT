@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <title>기업 마이페이지3-1</title>
+    </head>
+    <style>
+    	#content {
+    		margin-left: 250px;
+    		width: 1100px;
+    		height: 600px;
+    	}
+        body>table, td {
+            margin: 250px 310px;
+            border-style: solid;
+            border-collapse: collapse;
+            text-align: center;
+            width: 820px;
+            height: 70px;
+        }
+        #main {
+            background-color: lightgray;
+        }
+        #mypage {
+            width: 200px;
+            height: 1200px;
+            display: block;
+            justify-content: center;
+            float: left;
+            font-size: x-large;
+            text-align:center;
+            background-color: teal;
+        }
+        #myCom {
+	        margin-top: 60px;
+	        margin-bottom: 80px;
+	        color: white;
+        }
+        #com_ul>li {
+        	display: flex;
+        	margin-top: 50px;
+        	margin-bottom: 50px;
+        }
+        #com_ul>li>a {
+        	color: white;
+        }
+        #sub1>td {
+            height: 40px;
+        }
+        #sub2>td {
+            height: 40px;
+        }
+        button {
+            width: 60%;
+            height: 30px;
+        }
+    </style>
+    <body>
+    <section>
+   			<div id="mypage">
+		        <div id="myCom">마이페이지</div>	
+				<ul id="com_ul"> 
+				<li><a href="./com/mypage_first.html">기업정보수정</a></li>
+				<li><a href="./com/mypage_second_1.html">광고등록내역</a></li>
+				<li><a href="./com/mypage_third_1.html">광고내역/지급</a></li>
+			</ul>
+          </div>
+          <div id="content">
+        	<table>
+	            <tr id="main">
+	                <td>광고번호</td>
+	                <td>시작일</td>
+	                <td>종료일</td>
+	                <td>기간</td>
+	                <td>파트너수</td>
+	                <td>예산</td>
+	                <td>누적지급액</td>
+	                <td>활동내역</td>
+	            </tr>
+	            <tr id="sub1">
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td><button>확인</button></td>
+	            </tr>
+	            <tr id="sub2">
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td><button>확인</button></td>
+	            </tr>
+        	</table>
+        </div>
+        </section>
+    </body>
+    <script>
+    $(function () {
+    	// DOM 트리에서 a객체 찾기
+    	var $menuObj = $('#com_ul > li > a');
+    	
+    	// DOM 트리에서 section 객체 찾기
+        var $section = $('#page-top > section'); // 상위
+    	
+    	$menuObj.click(function () {
+    		$(document).off();
+    		var href = $(this).attr('href');
+    		switch (href) {
+    		case './com/mypage_first.html': 
+    		case './com/mypage_second_1.html':
+    		case './mypage_third_1.html':
+                $section.load(href, function (responseTxt, statusTxt, xhr) {
+                    if (statusTxt == 'error') alert('Error: ' + xhr.status + ': ' + xhr.statusText);
+                  });
+                  break;
+    		}	
+        return false;
+    	});
+    });
+    </script>
+</html>

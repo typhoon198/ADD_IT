@@ -1,0 +1,321 @@
+<!-- <!DOCTYPE html>
+CSS
+<link rel="stylesheet" href="./css/basic.css" />
+ 
+ 
+jQuery
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+ 
+ 
+<html>
+<head>
+
+<title>Insert title here</title>
+ -->
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<!-- CSS -->
+<style type="text/css">
+.container {
+	display: grid;
+	grid-template-areas: "A B C" "A D D" "A E E";
+	grid-template-columns: 10px 0.8fr 1fr; /* 가로 170px 0.8fr 1fr */
+	grid-template-rows: 1fr 1fr 1.2fr; /* 세로 */
+	border: black 1px solid;
+	width: 900px; /* 800 */
+	height: 600px;
+	padding: 0px 0px 50px 30px;
+	font-size: large;
+}
+[class$='in'] input:not(#zipNo, #addr1, #addr2) { /* div input  .container [class^='in'] :not(#zipNo) */
+	width: 200px;
+	height: 35px;
+	background: lightblue; /* 입력칸 */
+}
+.container input:not(.itemA input) {
+	height: 35px;
+	font-size: large;
+	
+}
+.itemA {
+	padding-top: 60px;
+	grid-area: A;
+	/* border: black 1px solid; */
+	font-size: small;
+}
+
+.itemB {
+	grid-area: B;
+	/* border: black 1px solid; */
+	padding: 60px 40px 0 0;
+	text-align: right;
+	line-height: 60px;
+}
+
+.itemC {
+	grid-area: C;
+	/* border: black 1px solid; */
+	text-align: right;
+	padding: 60px 100px 0 0;
+	line-height: 60px;
+}
+
+.itemD {
+	grid-area: D;
+	/* border: black 1px solid; */
+	text-align: right;
+	padding: 0 260px 0 0;
+	line-height: 40px;
+}
+#addr1, #addr2 {
+	width: 450px;
+}
+
+.itemE {
+	grid-area: E;
+	/* border: black 1px solid; */
+	position: relative;
+}
+
+form  label>span::after {
+	content: ' : ';
+}
+
+
+
+#zipNo {
+	width: 70px;
+	margin-right: 20px;
+}
+
+/* div>input[name="addr"] {
+	width: 150px;
+} */
+
+
+
+div>fieldset {
+	width: 500px;
+	margin-left: 120px;
+	display: flex;
+	justify-content: space-between;
+}
+
+div.itemE button {
+	position: absolute;
+	font-size: larger;
+	padding: 10px;
+	right: 50px;
+	bottom: 0px;
+}
+
+.box {
+	width: 150px;
+	height: 150px;
+	border-radius: 70%;
+	background-color: yellow;
+	overflow: hidden;
+}
+.profile {
+    width: 100%;
+    height: 100%;
+    /* object-fit: cover; */
+}
+  div.bg {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    border: 1px solid;
+    left: 0px;
+    top: 100px;
+    width: 100%;
+    height: 100%;
+    margin: 10px;
+    overflow: auto;
+    /* 레이어 색깔 */
+    background-color: rgba(199, 196, 196, 0.4);
+    clear: both;
+  }
+  div.modal {
+    display: block;
+    position: relative;
+    border: 1px solid orange;
+    border-radius: 10px;
+    background-color: papayawhip;
+	}
+</style>
+<script>	
+
+		// 주소 찾기
+	var goPopup = function() {
+		var pop = window.open("/Add_it/indi/indi_pop.jsp", "pop",
+				"width=800,height=800, scrollbars=yes, resizable=yes"); //
+	} //
+	//주소 찾기
+	var jusoCallBack = function(roadFullAddr, roadAddrPart1, addrDetail,
+			roadAddrPart2, engAddr, jibunAddr, zipNo) {
+
+		document.getElementById("zipNo").value = zipNo;
+		document.getElementById("addr1").value = roadFullAddr;
+		
+		if (addrDetail.length > 30) {
+			alert('상세주소가 너무 길어 다시 입력해야 합니다.');
+			return;
+		}
+		document.getElementById("addr2").value = addrDetail;
+	}
+	
+	
+
+	$(function () {
+		
+		// 개인 정보 출력
+		//var backurl = './indi';
+		var backurl = '/Add_it/indi';
+		$.ajax({
+			url: backurl,
+			method: 'get',
+			contentType: "application/json; charset=utf-8", 
+			data: {type : 1},  // 1:조회, 2:수정
+			success: function (responseObj) {
+				if (responseObj.length == 0) {
+			    	alert("개인 정보가 없습니다.");
+			    	
+				} else {
+					//alert("html else : "+responseObj.in_id);
+					$("form div .in_id").val(responseObj.in_id);
+					$("form div .in_name").val(responseObj.in_name);
+					$("form div .in_birthday").val(responseObj.in_birthday.split(" ")[0]);
+					$("form div .pwd1").val("＊＊＊＊＊＊＊＊");
+					$("form div .pwd2").val("＊＊＊＊＊＊＊＊");
+					$("form div .in_email").val(responseObj.in_email);
+					$("form div .in_phone").val(responseObj.in_phone);
+					$("form div .in_zipcode").val(responseObj.in_zipcode);
+					$("form div .in_address_").val(responseObj.in_address.match(/.*[로,동,읍,리,면,길](?<!\s)/)); // .*[동,읍,리,면](?<!\\s)
+					$("form div .in_address").val(responseObj.in_address.match(/(?<=[로,동,읍,리,면,길]\s).*/)); // (?<=[동]\\s).*
+					$("form div input[value="+responseObj.in_cartype+"]").attr("checked", true);
+					console.log("input[value="+responseObj.in_cartype+"]");
+				}
+			}
+		});
+
+		 
+		// 개인 정보 수정용
+	    $('div.itemE > div > button').click(function () { ///
+		    var backurl = '/Add_it/indi';
+		    $.ajax({
+		    	url: backurl,
+		        method: 'post',
+				data : inform_val(),  // 1:조회, 2:수정
+		        success: function (responseData) {
+		        	switch (responseData.status){
+	            	case 1:
+	                	alert('변경이 완료되었습니다.');
+	                	
+	                	break;
+	              	case 2:
+	                	alert('변경 내용이 없습니다.');
+		          		break;
+		        	}
+		        	$('#modifyInfo').prop("disabled", true);
+		        	$('#modifyInfo').css('background-color', 'lightgray');
+		        	
+		    	},
+	      	}); 
+    	});
+		
+	    var inform_val = function() {
+	    	var map = {
+				type:2,
+				in_id:$("form div .in_id").val(), 
+				in_email:$("form div .in_email").val(),
+				in_phone:$("form div .in_phone").val(),
+				in_zipcode:$("form div .in_zipcode").val(),
+				in_address:$("form div .in_address_").val()+" "+$("form div .in_address").val(),
+				in_cartype:$("form div .in_cartype:checked").attr('value')
+			}
+	    	
+			return map;
+	    }
+	});
+	
+	$(".container input").change(function(){
+		$('#modifyInfo').prop("disabled", false);
+		$('#modifyInfo').css('background-color', 'salmon');
+		
+	});
+
+</script>
+
+
+<!-- </head>
+<body>
+ -->
+<form method="post" action="" autocomplete="off">
+	<div class="container">
+
+		<div class="itemA">
+			<!-- <form name="img_upload" method="post" action="./upload" enctype="multipart/form-data">
+				<div class="box">
+					<img class="profile" alt="" src="">
+				</div>
+				<span>프로필 사진을 올려주세요.</span><br><br>
+				<input type="text" name="t" value="test">
+				<input type="file" name="f" value="이미지 선택">
+				<input type="reset" name="reset" value="삭제">
+			</form> -->
+		</div>
+		<div class="itemB in">
+			<label><span>아이디</span><input class="in_id" type="text" name="id" required></label><br>
+			<label><span>이름</span><input class="in_name" type="text" readonly> </label><br>
+			<label><span>비밀번호</span><input class="pwd1" type="password" name="pwd" required> </label><br> 
+			<!--"number" : 휴대폰에서는 숫자 키패드만 오픈됨 -->
+		 	<label><span>주소</span>
+			<input	type="text" class="in_zipcode" id="zipNo" readonly> <!-- <button type="button" class="searchzip">검색</button><br /> -->
+		 	<button type="button" class="zip_code_btn" onclick="javascript:goPopup();">우편번호</button>
+		</div>
+		<div class="itemC in">
+			<label><span>생년월일</span><input class="in_birthday" type="text" readonly></label><br>
+			<label><span>이메일</span><input class="in_email" type="email" name="email" required></label><br>
+			<label><span>비밀번호 확인</span><input type="password" class="pwd2" required></label><br> 
+			<label><span>연락처</span><input class="in_phone" type="number" required></label>
+		</div>
+		<div class="itemD in">
+			<!-- <input type="text" class="baseaddr" name="addr" readonly><br>
+		<input type="text" name="addr"><br> -->
+			
+			<input id="addr1" class="in_address_" type="text" placeholder="기본 주소" id="addr" name="addr"><br /> 
+			<input id="addr2" class="in_address" type="text" placeholder="상세 주소" id="addrDetail" name="addr">
+		</div>
+		<div class="itemE">
+			<fieldset>
+				<legend>차종선택</legend>
+				<label><input class="in_cartype" type="radio" name="r" value="0" /> 경차 
+				&nbsp;&nbsp; 
+				</label>
+				<label><input class="in_cartype" type="radio" name="r" value="1" /> 승용차
+				&nbsp; &nbsp; 
+				</label> 
+				<label><input class="in_cartype" type="radio" name="r" value="2" /> SUV
+				&nbsp; &nbsp;
+				</label>
+				<label><input class="in_cartype" type="radio" name="r" value="3" /> 대형
+				&nbsp; &nbsp;</label>
+			</fieldset>
+			<div>
+				<!-- <button type="reset" value="">초기화    </button><br> -->
+				<button id="modifyInfo" type="button" value="변경" disabled="">변경 완료</button>
+			</div>
+		</div>
+	</div>
+	  <div class="bg">
+	    <div class="modal">
+	      <button class="done">변경 완료</button>
+	    </div>
+  	</div>
+</form>
+<!-- 
+</body>
+</html> -->

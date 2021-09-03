@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add it | 기업 회원가입</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="../public/js/signup.js"></script>
+<link href="../public/css/signup.css" rel="stylesheet">
+<body>
+<div class="page_container">
+    <div class="page_top">
+        <div class="page_top_title">
+            <h2>기업 회원가입</h2>
+        </div>
+    </div>
+    <div class="page_middle" style="padding:2em 2em 3em">
+        <form action="localhost:8888/api/" method="post" accept-charset="utf-8">
+            <div class="join_form">
+                <ul>
+                    <li>
+                        <label>아이디</label>
+                        <div class="renew_input">
+                            <input type="text" name="mem_userid" maxlength="45"
+                                   placeholder="사용하실 아이디를 입력해주세요.">
+                        </div>
+                        <button class="id_search" type="button" onclick="duplicateCheck()">아이디 중복 확인</button>
+                        <div id="message1"></div>
+                    </li>
+                    <li>
+                        <label>비밀번호</label>
+                        <div class="renew_input">
+                            <input type="password" name="mem_userPw" maxlength="50"
+                                   placeholder="사용하실 비밀번호를 입력해주세요.">
+                        </div>
+                        <div id="message2"></div>
+                    </li>
+                    <li>
+                        <label>비밀번호 확인</label>
+                        <div class="renew_input">
+                            <input type="password" name="mem_userPw2" id="mem_userPw2" maxlength="50"
+                                   placeholder="비밀번호를 다시 입력해주세요.">
+                        </div>
+                        <div id="message3"></div>
+                    </li>
+                    <li>
+                        <label>회사명</label>
+                        <div class="renew_input">
+                            <input type="text" name="mem_userName" maxlength="20"
+                                   placeholder="기업명을 입력해주세요.">
+                        </div>
+                    </li>
+                    <li>
+                        <label>전화번호</label>
+                        <div class="renew_input">
+                            <input type="text" name="mem_userPhone" maxlength="30"
+                                   placeholder="기업 전화번호를 입력해 주세요.">
+                        </div>
+                    </li>
+                    <li>
+                        <label>이메일</label>
+                        <div class="input_box_m">
+                            <input type="text" name="mem_userEmail" maxlength="25"
+                                   placeholder="담당자 이메일을 입력해 주세요.">
+                        </div>
+                        <div class="input_box_m">@
+                            <input name="mem_userEmail2" type="text">
+                            <select name="select_email" class="input_box_m" onChange="selectEmail(this)">
+                                <option value="1" selected>직접입력</option>
+                                <option value="naver.com">naver.com</option>
+                                <option value="gmail.com">gmail.com</option>
+                                <option value="hanmail.com">hanmail.com</option>
+                                <option value="hotmail.com">hotmail.com</option>
+                                <option value="nate.com">nate.com</option>
+                                <option value="yahoo.co.kr">yahoo.co.kr</option>
+                                <option value="empas.com">empas.com</option>
+                                <option value="dreamwiz.com">dreamwiz.com</option>
+                                <option value="freechal.com">freechal.com</option>
+                                <option value="lycos.co.kr">lycos.co.kr</option>
+                                <option value="korea.com">korea.com</option>
+                                <option value="gmail.com">gmail.com</option>
+                                <option value="hanmir.com">hanmir.com</option>
+                                <option value="paran.com">paran.com</option>
+                            </select>
+                        </div>
+                    </li>
+                    <div class="addr_div">
+                        <li style="display: inline-block">
+                            <label>우편번호</label>
+                            <div class="renew_input">
+                                <input type="text" id="zipNo" name="mem_userZipcode" class="mem_userAddr" maxlength="5"
+                                       placeholder="우편번호를 입력해 주세요.">
+                            </div>
+                        </li>
+                        <button type="button" class="zip_search" onclick="DaumPostcode()">주소 검색</button>
+                        <li>
+                            <div class="renew_input">
+                                <input type="text" id="roadAddrPart" class="mem_userAddr" placeholder="주소를 입력해 주세요."
+                                       style="display: block">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="renew_input">
+                                <input type="text" id="addrDetail" name="mem_userAddr" class="mem_userAddr"
+                                       placeholder="상세주소를 입력해 주세요.">
+                            </div>
+                        </li>
+                    </div>
+                    <li>
+                        <label>사업자 번호</label>
+                        <div class="renew_input">
+                            <input type="number" name="mem_rn" id="RN" class="label">
+                        </div>
+                    </li>
+                    <li>
+                        <label>업종 분류</label>
+                        <div class="renew_input">
+                            <select name="select_sector" id="select_sector" class="input_box_bt">
+                                <option value="0" selected>선택</option>
+                                <option value="1" >병의원</option>
+                                <option value="2">맛집/카페</option>
+                                <option value="3">생활서비스(청소,이사,세탁)</option>
+                                <option value="4">인터리어/설비</option>
+                                <option value="5">학원/교육</option>
+                                <option value="6">부동산중개업소</option>
+                                <option value="7">유통(마트,문구,서점 등)</option>
+                                <option value="8">법무/세무/회계</option>
+                                <option value="9">헤어/뷰티/미용/스파</option>
+                                <option value="10">스포츠/헬스/레저</option>
+                                <option value="11">화랑/출판/공방</option>
+                                <option value="12">공공/단체/정책/홍보</option>
+                                <option value="13">영화/연출/미술</option>
+                                <option value="14">시장/거리</option>
+                                <option value="15">호텔/숙박/캠핑</option>
+                                <option value="16">기타</option>
+                            </select>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="box_line"></div>
+            <footer class="link_box" style="width: 100%;margin:0 auto;">
+                <div class="link_box_left" style="margin-left: 45px">
+                    <p class=""><a href="info/service.html">이용약관</a> 및 <a href="info/privacy.html">개인정보 보호방침</a>에</p>
+                    <p class="box_login_temp">동의하면 회원가입 버튼을 눌러주세요.</p>
+                </div>
+                <div class="link_box_right" style="margin-right: 45px">
+                    <button type="submit" class="btn_submit" onclick="companySignUp()">회원가입</button>
+                </div>
+            </footer>
+        </form>
+    </div>
+</div>
+</body>
+</html>

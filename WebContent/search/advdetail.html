@@ -1,0 +1,287 @@
+<style>
+  div.top {
+    font-size: 30px;
+  }
+  img {
+    width : 500px;
+    heigth : 450px;
+  }
+  article > table {
+    width: 90%;
+    font-size: 25px;
+  }
+  a.back {
+  width: 200px;
+    font-size 26px;
+    float: right;
+    margin: 10px;
+    text-align: center;
+  }
+  button.a,
+  button.apply {
+    width: 200px;
+    height: 80px;
+    margin: 10px;
+    float: right;
+    font-size: 20px;
+  }
+  a.back {
+    font-size: 30px;
+    background-color: rgba(129, 126, 196, 0.4);
+    height: 40px;
+  }
+  div.bg {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    border: 1px;
+    left: 0px;
+    top: 100px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    overflow: auto;
+    /* 레이어 색깔 */
+    background-color: rgba(129, 196, 196, 0.4);
+    clear: both;
+  }
+  div.modal {
+    display: block;
+    position: relative;
+    border: 2px solid quamarine;
+    border-radius: 10px;
+    background-color: mediumaquamarine;
+    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+
+    /* 배경레이어 보다 앞에 보이기*/
+    z-index: 10000;
+    width: 35%;
+    height: 230px;
+    /* div center 정렬*/
+    top: 5%;
+    margin: 200px auto;
+    text-align: center;
+    line-height: 100px;
+    margin-left: 1000px;
+    margin-right: 100px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  div.modal li {
+    height: 50px;
+  }
+  div.modal label {
+    margin-top: 10px;
+    padding-top: 30px;
+  }
+  div.modal input {
+    padding-top: 10px;
+  }
+  div.modal label, button.apply2, button.back2 {
+    font-size: 26px;
+  }
+  label.bank {
+    margin-left: 27px;
+  }
+  button.apply2, button.back2 {
+    margin-top: 50px;
+    margin-left: 14px;
+  }
+  div.modal input {
+    margin-left: 14px;
+    width: 250px;
+    heigth: 12px;
+  }
+  
+</style>
+<script>
+
+console.log($("button.apply"));
+$(function () {
+    /*--신청하기 클릭 시작--*/
+    $("button.apply").click(function () {
+    	/* alert("modal"); */
+          //div영역보여주기
+          $("div.bg").show();
+         var $bankinfo = $("input.bank");
+     	 var $acnoinfo = $("input.acno");
+     	 var backurl = "/Add_it/acnoinfo";
+     	 
+     	 $.ajax({
+     		 url: backurl,
+     		 method: "get",
+     		 success: function (responseData) {
+     				var bank = responseData.bank;
+     				var acno = responseData.acno;
+     				$("input.bank").val(bank);
+     				$("input.acno").val(acno);
+     				//$("input.acno").attr("value", acno);
+     				console.log(bank);
+     		 },
+     	 });
+    });
+    /*--신청하기 클릭 끝--*/
+
+      /*--modal 신청하기 클릭 시작--*/
+      //$("button.apply2").on('click', function () {
+    	  $("button.apply2").click(function(e) {
+    		  e.preventDefault();
+    	  
+    	//$(document).off('click').on('click', "button.apply2", function () {
+        var backurl2 = '/Add_it/compare';
+        $.ajax({
+          url: backurl2,
+          method: 'get',
+          success: function (responseObj) {
+             //비로그인 0
+             //기업회원 1
+             //개인회원 ,신청불가-2
+             //개인회원,신청가능2
+             //DB연결 실패 -3
+             //alert(responseObj.status);
+             
+             if (responseObj.status == "2") {
+            	 
+            	//계좌입력확인
+                 var bankinfo = $("input.bank").val();
+                 var acnoinfo = $("input.acno").val();
+                 if ((bankinfo == "") || (acnoinfo == "")) {
+                    alert("계좌정보를 입력해주세요");
+                    return false;
+                 }
+
+ 			var backurl = '/Add_it/addapply';
+			var adv_no = $("#page-top > section > article.img > img").attr("value");
+
+                $.ajax({
+                   url: backurl,
+                   method: 'get',
+                   data: { adv_no: adv_no },
+                   success: function (responseObj) {
+                	   
+                	 var backurl3 = '/Add_it/acnoinfo';
+                	 
+                  	 $.ajax({
+                  		url: backurl3,
+                  		method: 'get',
+                  		success: function (responseData) {
+                  			var bankinfo2 = $("input.bank").val();
+                            var acnoinfo2 = $("input.acno").val();
+                  			if((bankinfo2 != responseData.bank) || (acnoinfo2 != responseData.acno)) {
+                  				var backurl4 = '/Add_it/updateacno';
+                  				$.ajax({
+                  					url: backurl4,
+                  					method: 'get',
+                              		data: { bankinfo: bankinfo, acnoinfo: acnoinfo },
+                              		success: function (responseObj) {
+                              			switch (responseObj.update) {
+                              			case 1:
+                              				alert('계좌 정보가 수정되었습니다');
+                              				break;
+                              			case -1:
+                              				alert('계좌 정보 수정 실패');
+                              				break;
+                              			}
+                              		}
+                  				});
+                  			}
+                  		},
+                  	 });
+
+                       switch (responseObj.status) {
+                          case 1:
+                             alert('신청 성공');
+                             $("div.bg").hide();
+                             break;
+                          case -2:
+                             alert('신청 실패');
+                             $("div.bg").hide();
+                             break;
+                           }
+                       
+                   },
+                });
+
+             } else {
+                alert(responseObj.msg);
+                $("div.bg").hide();
+             }
+          },
+       });
+   });
+  /*--modal 신청하기 클릭 끝--*/
+    
+
+  
+  /*--modal 뒤로가기 버튼 클릭--*/
+  $("button.back2").on('click', function() {
+	  $("div.bg").hide();
+ 	  $("input.bank").val("");
+	  $("input.acno").val("");
+  });
+  /*--modal 뒤로가기 버튼 클릭 끝--*/
+  
+});
+</script>
+<div class="top">광고상세</div>
+<br />
+<article class="img">
+  <img src="" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <div class="info">
+     <!--  광고소개글<br />카카오와 함께하실 파트너를 구합니다<br />서울에서 차량
+          운행하실 파트너를 구합니다 <br />
+          3개월 간 광고 이행이 가능하신 분 원합니다 <br />
+          ^ㅡ^ -->
+  </div>
+</article>
+<br /><br /><br />
+<article class="detail">
+  <table class="detail">
+    <tr>
+      <td>업체명</td>
+      <td class="com_name"></td>
+      <td>모집기간</td>
+      <td class="adv_rp"></td>
+    </tr>
+    <tr>
+      <td>업종</td>
+      <td class="com_bt"></td>
+      <td>기간</td>
+      <td class="adv_period"></td>
+    </tr>
+    <tr>
+      <td>월 광고비</td>
+      <td class="adv_fee"></td>
+      <td>광고개월 수</td>
+      <td class="adv_totalmonth"></td>
+    </tr>
+    <tr>
+      <td>모집 인원</td>
+      <td class="adv_total"></td>
+      <td>희망 차종</td>
+      <td class="adv_cartype"></td>
+    </tr>
+    <tr>
+      <td>지역</td>
+      <td class="adv_location"></td>
+    </tr>
+  </table>
+  <br /><br /><br />
+</article>
+<button class="apply">
+  신청하기
+</button>
+<!-- <button type="button" class="a">수정하기</button> -->
+<br /><br /><br /><br /><br />
+<a class="back" href="/Add_it/search/advsearch.html" style="text-decoration:none">뒤로가기</a>
+<div class="bg">
+  <div class="modal">
+    <form action="#" method="get" accept-charset="utf-8">
+      <ol style="list-style-type: none; padding: 0px">
+        <li class="in"><label class="bank">은행명   <input type="text" class="bank" required /></label></li>
+        <li class="in"><label>계좌번호   <input type="text" class="acno" required /></label></li>
+        <li class="in"><button type="submit" class="apply2">신청하기</button>  <button type="button" class="back2">뒤로가기</button></li>
+      </ol>
+    </form>
+  </div>
+</div>

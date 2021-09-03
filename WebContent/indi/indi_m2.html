@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<!--   <script src="public/js/indi_m2.js"></script> -->
+<script>
+/* 첫 로드 */
+$(function() {
+   var $trObj = $('table.table_apply tr.apply');
+   var url = '/Add_it/applylist';
+   console.log(url);
+   $.ajax({
+       url : url,
+       method : 'get',
+       data : {
+           opt : 'getList',
+           field : 'com_name',
+           query : ''
+       },
+       success : function(responseData) {
+           var state = "";
+           console.log('responseData 아래 출력');
+           console.log(responseData);
+
+           // 신청내역 리스트 출력
+           $(responseData.list).each(function(i, e) {
+               switch (e.app_state) {
+                   case -1:   state = "거절";
+                       break;
+                   case 0:   state = "대기";
+                       break;
+                   case 1:   state = "수락";
+                       break;
+                   default: console.log("예외")
+               }
+               var $copyObj;
+               $copyObj = $trObj.clone();
+               $copyObj.find('td.app_no').html(e.app_no);
+               $copyObj.find('td.adv_no').html(e.adv.adv_no);
+               $copyObj.find('td.app_date').html(e.app_date);
+               $copyObj.find('td.com_name').html(e.c.com_name);
+               $copyObj.find('td.adv_start').html(e.adv.adv_startmonth);
+               $copyObj.find('td.adv_end').html(e.adv.adv_endmonth);
+               $copyObj.find('td.app_state').html(state);
+               $copyObj.show();
+               $trObj.parent().append($copyObj);
+
+           });
+           
+           // 페이지 번호 처리
+           var field = '';
+           var query = '';
+           var href = '/Add_it/applylist?field='+ field + '&query='+ query +'&currentPage=';
+          var ahtml = '';
+		   var $page_list = $('.page_list');
+			$page_list.empty();
+            console.log('---------------------------');
+
+           for(var i=responseData.startPage; i <= responseData.endPage; i++){ 
+              
+               ahtml+= '<a href="';
+              ahtml+= href;
+              ahtml+= i+'"';
+              
+              
+              if(i == responseData.currentPage){
+                 ahtml+= ' id="cNo"';
+              } 
+              
+              ahtml+= ' class="page_nums">';
+              ahtml+= i + '</a>';
+              
+              if(i == responseData.endPage){
+            	  console.log('return');
+            	  break;
+            	  
+              }
+              ahtml+= ' | ';
+              console.log(i);
+
+           } 
+           console.log(ahtml);
+           $page_list.html(ahtml);
+           
+           console.log(responseData.currentPage);
+           console.log(responseData.startPage);
+           console.log(responseData.endPage);
+       }
+   });
+   //
+   
+	// 페이지 번호 클릭
+    $(document).off('click').on('click', 'span.page_list > a, a.page_next, a.page_last', function(e){
+ 		e.preventDefault();
+ 	    console.log('a요소3:'+$(this).text()); // 2
+ 	 	console.log('a요소4:'+$(this).attr("href")); // /Add-it ... page=2
+ 	 	$('table.table_apply tr.apply').not(':first').remove();
+ 	 	var url = $(this).attr("href");
+		$.ajax({
+		        url : url,
+		        method : 'get',
+		        data : {},
+		        success : function(responseData) {
+		            var state = "";
+		            console.log('responseData 아래 출력');
+		            console.log(responseData);
+
+		            // 신청내역 리스트 출력
+		            
+		            $(responseData.list).each(function(i, e) {
+		                switch (e.app_state) {
+		                    case -1:   state = "거절";
+		                        break;
+		                    case 0:   state = "대기";
+		                        break;
+		                    case 1:   state = "수락";
+		                        break;
+		                    default: console.log("예외")
+		                }
+		                
+		                var $copyObj;
+		                $copyObj = $trObj.clone();
+		                $copyObj.find('td.app_no').html(e.app_no);
+		                $copyObj.find('td.adv_no').html(e.adv.adv_no);
+		                $copyObj.find('td.app_date').html(e.app_date);
+		                $copyObj.find('td.com_name').html(e.c.com_name);
+		                $copyObj.find('td.adv_start').html(e.adv.adv_startmonth);
+		                $copyObj.find('td.adv_end').html(e.adv.adv_endmonth);
+		                $copyObj.find('td.app_state').html(state);
+		                $copyObj.show();
+		                $trObj.parent().append($copyObj);
+
+		            });
+		            
+		         // 페이지 번호 처리
+					var field = searchType;
+					var query = srchKeyword;
+		            var href = '/Add_it/applylist?field='+ field + '&query='+ query +'&currentPage=';
+					var ahtml = '';
+					var $page_list = $('.page_list');
+					$page_list.empty();
+					console.log('---------------------------');
+					
+					console.log(responseData.startPage+" / "+responseData.endPage+" / "+responseData.totalPage);
+					console.log(responseData.endPage < responseData.totalPage);
+					console.log(responseData.endPage < responseData.totalPage ? responseData.endPage+1 : responseData.endPage );
+					var firstPageHref = href+1;
+					var leftPageHref = href+(responseData.startPage==1 ? 1 : responseData.startPage - 1 );
+					var rightPageHref = href+(responseData.endPage < responseData.totalPage ? responseData.endPage+1 : responseData.endPage );
+					var lastPageHref = href+responseData.totalPage;
+					console.log(firstPageHref+" / "+leftPageHref+" / "+rightPageHref+" / "+lastPageHref);
+					
+					
+					// startPage == 1 이면, 좌측 이동 버튼 불필요
+					if(responseData.startPage != 1){
+						$('a.page_first').attr("href", firstPageHref);
+						$('a.page_prev').attr("href", leftPageHref);
+					}
+					
+					// endPage == totalPage 이면, 우측 이동 버튼 불필요
+					if(responseData.endPage != responseData.totalPage){
+						$('a.page_next').attr("href", rightPageHref);
+						$('a.page_last').attr("href", lastPageHref);	
+					}
+					
+		            for(var i=responseData.startPage; i <= responseData.endPage; i++){ 
+		               
+		               ahtml+= '<a href="';
+		               ahtml+= href;
+		               ahtml+= i+'"';
+		               
+		               if(i == responseData.currentPage){
+		                  ahtml+= ' id="cNo"';
+		               } 
+		               
+		               ahtml+= ' class="page_nums">';
+		               ahtml+= i + '</a>';
+		               
+		               if(i == responseData.endPage){
+		             	  console.log('return');
+		             	  break;
+		             	  
+		               }
+		               ahtml+= ' | ';
+		               console.log(i);
+
+		            } 
+		            console.log(ahtml);
+		            $page_list.html(ahtml);
+		            
+		            /////////////////////////////////
+		        }
+	 	});
+   });
+   
+   //검색
+   var searchType = '';
+   var srchKeyword = '';
+   $('input.btn_sch').click(function(e){
+	   	e.preventDefault();
+         $('table.table_apply tr.apply').not(':first').remove();
+         var url = '/Add_it/applylist';
+         searchType = $('#searchType option:selected').val();
+         srchKeyword = $('#srchKeyword').val();
+         $.ajax({
+             url : url,
+             method : 'get',
+             data : {
+                 opt : 'getList',
+                 //currentPage : 1,
+                 field :searchType,
+                 query : srchKeyword,
+             },
+             success : function(responseData) {
+                 var state = "";
+                 console.log('responseData 아래 출력');
+                 console.log(responseData);
+
+                 // 신청내역 리스트 출력
+                 $(responseData.list).each(function(i, e) {
+                     console.log(i + ',' + e);
+                     console.log(i + ',' + e.app_state);
+                     console.log(i + ',' + e.app_no);
+                     switch (e.app_state) {
+                         case -1:   state = "거절";
+                             break;
+                         case 0:   state = "대기";
+                             break;
+                         case 1:   state = "수락";
+                             break;
+                         default: console.log("예외")
+                     }
+                     console.log('e.adv.c.com_name '+e.c.com_name)
+                     var $copyObj;
+                     $copyObj = $trObj.clone();
+                     $copyObj.find('td.app_no').html(e.app_no);
+                     $copyObj.find('td.adv_no').html(e.adv.adv_no);
+                     $copyObj.find('td.app_date').html(e.app_date);
+                     $copyObj.find('td.com_name').html(e.c.com_name);
+                     $copyObj.find('td.adv_start').html(e.adv.adv_startmonth);
+                     $copyObj.find('td.adv_end').html(e.adv.adv_endmonth);
+                     $copyObj.find('td.app_state').html(state);
+                     $copyObj.show();
+                     $trObj.parent().append($copyObj);
+
+                 });
+                 
+            // 페이지 번호 처리
+			var field = searchType;
+			var query = srchKeyword;
+            var href = '/Add_it/applylist?field='+ field + '&query='+ query +'&currentPage=';
+			var ahtml = '';
+			var $page_list = $('.page_list');
+			$page_list.empty();
+			console.log('---------------------------');
+			
+			console.log(responseData.startPage+" / "+responseData.endPage+" / "+responseData.totalPage);
+			console.log(responseData.endPage < responseData.totalPage);
+			console.log(responseData.endPage < responseData.totalPage ? responseData.endPage+1 : responseData.endPage );
+			var firstPageHref = href+1;
+			var leftPageHref = href+(responseData.startPage==1 ? 1 : responseData.startPage - 1 );
+			var rightPageHref = href+(responseData.endPage < responseData.totalPage ? responseData.endPage+1 : responseData.endPage );
+			var lastPageHref = href+responseData.totalPage;
+			console.log(firstPageHref+" / "+leftPageHref+" / "+rightPageHref+" / "+lastPageHref);
+			
+			
+			// startPage == 1 이면, 좌측 이동 버튼 불필요
+			if(responseData.startPage != 1){
+				$('a.page_first').attr("href", firstPageHref);
+				$('a.page_prev').attr("href", leftPageHref);
+			}
+			
+			// endPage == totalPage 이면, 우측 이동 버튼 불필요
+			if(responseData.endPage != responseData.totalPage){
+				$('a.page_next').attr("href", rightPageHref);
+				$('a.page_last').attr("href", lastPageHref);	
+			}
+			
+            for(var i=responseData.startPage; i <= responseData.endPage; i++){ 
+               
+               ahtml+= '<a href="';
+               ahtml+= href;
+               ahtml+= i+'"';
+               
+               if(i == responseData.currentPage){
+                  ahtml+= ' id="cNo"';
+               } 
+               
+               ahtml+= ' class="page_nums">';
+               ahtml+= i + '</a>';
+               
+               if(i == responseData.endPage){
+             	  console.log('return');
+             	  break;
+             	  
+               }
+               ahtml+= ' | ';
+               console.log(i);
+
+            } 
+            console.log(ahtml);
+            $page_list.html(ahtml);
+
+           	}
+         
+         });
+   });
+});
+
+</script>
+
+
+<!-- CSS -->
+<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+#wrap {
+	border: black 1px solid;
+	width: 950px;
+	height: 1200px;
+	/* position: absolute; */
+    display: flex;
+    flex-direction: column;
+}
+
+#indi_state {
+	width: 90%;
+	/* position: relative; */
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+#indi_table_container {
+	text-align:center;
+	width: 90%;
+	border: black 1px solid;
+	/* position: relative; */
+	left: 50px;
+	top: 70px;
+	margin-left: 50px;
+}
+
+#table_apply {
+	width: 95%;
+	border: black 1px solid;
+	text-align: center;
+	vertical-align: top;
+	border-collapse: collapse;
+	min-height: 30px;
+}
+
+th, td {
+	width: 150px;
+	padding: 5px;
+	border: black 1px solid;
+	text-align: center;
+}
+
+#applyHistory {
+	font-size: x-large;
+}
+.title_search {
+	padding: 0;
+}
+.board_search{
+	min-width: 0;
+    padding: 0;
+    margin: 20px;
+    border: 0;
+    margin-left: 600px;
+
+}
+
+.apply_paging{
+	text-align: center;
+	padding: 15px;
+}
+p.page_num{
+    margin-right: 650px;
+}
+}
+</style>
+
+<section id="wrap">
+<div class="title_search">
+	<p id="indi_state">
+		<!-- <span class="id"></span>님은 <span class=""> 광고 승인 대기중입니다.</span> -->
+		<span id="applyHistory">신청내역</span>
+	</p>
+       <div class="Search_top_warp">
+      <form id="boardSearchForm" name="searchForm" method="get" action="" class="search_list">
+
+       <fieldset class="board_search">
+        <label for="searchType" class="hidden">검색구분 선택 : </label>
+        <select title="검색구분 선택" name="srchColumn" id="searchType" > <!--  -->
+          <option value="com_name">회사명</option>
+          <option value="app_state">상태</option>
+        </select>
+           <label for="srchKeyword" class="hidden" >검색어 입력: </label> 
+           <input type="text" class="inputTxt" title="검색어 입력" name="srchKeyword" id="srchKeyword" value="" />
+           <input type="button" value="검색" class="btn_sch" name="sbtn" title="검색" />
+       </fieldset>
+	</form>
+	</div>
+</div>
+
+	<div id="indi_table_container">
+
+		<table class="table_apply">
+			<tr>
+				<th>신청번호</th>
+				<th>광고번호</th>
+				<th>신청일자</th>
+				<th>업체명</th>
+				<th>시작일</th>
+				<th>종료일</th>
+				<th>상태</th>
+			</tr>
+			<tr class="apply" style="display: none">
+				<td class="app_no">d</td>
+				<td class="adv_no"></td>
+				<td class="app_date"></td>
+				<td class="com_name"></td>
+				<td class="adv_start"></td>
+				<td class="adv_end"></td>
+				<td class="app_state"></td>
+			</tr>
+		</table>
+	</div>
+	
+	 <div>
+           <div class="apply_paging"><span>
+			<a class='page_first' href="#"><<</a>
+			<a class='page_prev' href="#"><</a>
+			</span>
+
+			<span class="page_list">
+			
+			</span>
+			<span>
+			<a class='page_next' href="#">></a>
+			<a class='page_last' href="#">>></a>
+			</span>
+				<p class="page_num">현재페이지 <span class="red"><b>1</b></span> / 전체페이지 100</p>
+		</div>
+</section>
